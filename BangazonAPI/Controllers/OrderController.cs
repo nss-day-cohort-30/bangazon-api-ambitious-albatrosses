@@ -13,11 +13,11 @@ namespace BangazonAPI.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
-    public class PaymentTypeController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IConfiguration _config;
 
-        public PaymentTypeController(IConfiguration config)
+        public OrderController(IConfiguration config)
         {
             _config = config;
         }
@@ -30,7 +30,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values 
+        // GET api/values -- WORKING
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -39,32 +39,31 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, AcctNumber, Name, CustomerId " +
-                        "FROM PaymentType";
+                    cmd.CommandText = "SELECT Id, CustomerId, PaymentTypeId " +
+                        "FROM [Order]";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    List<PaymentType> paymentTypes = new List<PaymentType>();
+                    List<Order> orders = new List<Order>();
                     while (reader.Read())
                     {
-                        PaymentType paymentType = new PaymentType
+                        Order order = new Order
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            AccountNumber = reader.GetInt32(reader.GetOrdinal("AcctNumber")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId"))
+                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                            PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
                         };
 
-                        paymentTypes.Add(paymentType);
+                        orders.Add(order);
                     }
 
                     reader.Close();
 
-                    return Ok(paymentTypes);
+                    return Ok(orders);
                 }
             }
         }
 
-        // GET api/values/# 
+        // GET api/values/# -- WORKING
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -74,34 +73,33 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"SELECT
-                            Id, AcctNumber, Name, CustomerId
-                            FROM PaymentType
+                            Id, CustomerId, PaymentTypeId
+                            FROM [Order]
                             WHERE Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    PaymentType paymentType = null;
+                    Order order = null;
                     if (reader.Read())
                     {
-                        paymentType = new PaymentType
+                        order = new Order
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            AccountNumber = reader.GetInt32(reader.GetOrdinal("AcctNumber")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId"))
+                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                            PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
                         };
                     }
 
                     reader.Close();
 
-                    return Ok(paymentType);
+                    return Ok(order);
                 }
             }
         }
 
         // POST api/values 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] PaymentType paymentType)
+        public async Task<IActionResult> Post([FromBody] Order order)
         {
             using (SqlConnection conn = Connection)
             {
@@ -110,24 +108,23 @@ namespace BangazonAPI.Controllers
                 {
                     // More string interpolation
                     cmd.CommandText = @"
-                        INSERT INTO PaymentType (AcctNumber, Name, CustomerId)
+                        INSERT INTO [Order] (CustomerId, PaymentTypeId)
                         OUTPUT INSERTED.Id
-                        VALUES (@acctNumber, @name, @customerId)
+                        VALUES (@customerId, @paymentTypeId)
                     ";
-                    cmd.Parameters.Add(new SqlParameter("@acctNumber", paymentType.AccountNumber));
-                    cmd.Parameters.Add(new SqlParameter("@name", paymentType.Name));
-                    cmd.Parameters.Add(new SqlParameter("@customerId", paymentType.CustomerId));
+                    cmd.Parameters.Add(new SqlParameter("@customerId", order.CustomerId));
+                    cmd.Parameters.Add(new SqlParameter("@paymentTypeId", order.PaymentTypeId));
 
-                    paymentType.Id = (int)await cmd.ExecuteScalarAsync();
+                    order.Id = (int)await cmd.ExecuteScalarAsync();
 
-                    return CreatedAtRoute("GetPaymentType", new { id = paymentType.Id }, paymentType);
+                    return CreatedAtRoute("GetOrder", new { id = order.Id }, order);
                 }
             }
         }
 
         // PUT api/values/# 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] PaymentType paymentType)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Order order)
         {
             try
             {
@@ -137,15 +134,13 @@ namespace BangazonAPI.Controllers
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
-                            UPDATE PaymentType
-                            SET AcctNumber = @acctNumber,
-                                Name = @Name,
-                                CustomerId = @customerId
+                            UPDATE [Order]
+                            SET CustomerId = @customerId,
+                                PaymentTypeId = @paymentTypeId
                             WHERE Id = @id
                         ";
-                        cmd.Parameters.Add(new SqlParameter("@acctNumber", paymentType.AccountNumber));
-                        cmd.Parameters.Add(new SqlParameter("@name", paymentType.Name));
-                        cmd.Parameters.Add(new SqlParameter("@customerId", paymentType.CustomerId));
+                        cmd.Parameters.Add(new SqlParameter("@customerId", order.CustomerId));
+                        cmd.Parameters.Add(new SqlParameter("@paymentTypeId", order.PaymentTypeId));
                         cmd.Parameters.Add(new SqlParameter("@id", id));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
@@ -161,7 +156,7 @@ namespace BangazonAPI.Controllers
             }
             catch (Exception)
             {
-                if (!PaymentTypeExists(id))
+                if (!OrderExists(id))
                 {
                     return NotFound();
                 }
@@ -183,7 +178,7 @@ namespace BangazonAPI.Controllers
                     conn.Open();
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = @"DELETE FROM PaymentType " + 
+                        cmd.CommandText = @"DELETE FROM [Order] " +
                             "WHERE Id = @id";
                         cmd.Parameters.Add(new SqlParameter("@id", id));
 
@@ -198,7 +193,7 @@ namespace BangazonAPI.Controllers
             }
             catch (Exception)
             {
-                if (!PaymentTypeExists(id))
+                if (!OrderExists(id))
                 {
                     return NotFound();
                 }
@@ -209,7 +204,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        private bool PaymentTypeExists(int id)
+        private bool OrderExists(int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -217,7 +212,7 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = "SELECT Id " +
-                        "FROM PaymentType " +
+                        "FROM [Order] " +
                         "WHERE Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
 
