@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BangazonAPI.Models
 {
-    //lol hi
     public class Department
     {
         public int Id { get; set; }

@@ -13,11 +13,11 @@ namespace BangazonAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class EmployeesController : ControllerBase
     {
         private readonly IConfiguration _config;
 
-        public CustomersController(IConfiguration config)
+        public EmployeesController(IConfiguration config)
         {
             _config = config;
         }
@@ -39,13 +39,13 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Write your SQL statement here to get all customers";
+                    cmd.CommandText = "Write your SQL statement here to get all employees";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    List<Customer> customers = new List<Customer>();
+                    List<Employee> employees = new List<Employee>();
                     while (reader.Read())
                     {
-                        Customer customer = new Customer
+                        Employee employee = new Employee
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
@@ -53,12 +53,12 @@ namespace BangazonAPI.Controllers
                             // You might have more columns
                         };
 
-                        customers.Add(customer);
+                        employees.Add(employee);
                     }
 
                     reader.Close();
 
-                    return Ok(customers);
+                    return Ok(employees);
                 }
             }
         }
@@ -72,14 +72,14 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "Write your SQL statement here to get a single customer";
+                    cmd.CommandText = "Write your SQL statement here to get a single employee";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    Customer customer = null;
+                    Employee employee = null;
                     if (reader.Read())
                     {
-                        customer = new Customer
+                        employee = new Employee
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
@@ -90,14 +90,14 @@ namespace BangazonAPI.Controllers
 
                     reader.Close();
 
-                    return Ok(customer);
+                    return Ok(employee);
                 }
             }
         }
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Customer customer)
+        public async Task<IActionResult> Post([FromBody] Employee employee)
         {
             using (SqlConnection conn = Connection)
             {
@@ -106,22 +106,22 @@ namespace BangazonAPI.Controllers
                 {
                     // More string interpolation
                     cmd.CommandText = @"
-                        INSERT INTO Customer ()
+                        INSERT INTO Employee ()
                         OUTPUT INSERTED.Id
                         VALUES ()
                     ";
-                    cmd.Parameters.Add(new SqlParameter("@firstName", customer.FirstName));
+                    cmd.Parameters.Add(new SqlParameter("@firstName", employee.FirstName));
 
-                    customer.Id = (int) await cmd.ExecuteScalarAsync();
+                    employee.Id = (int)await cmd.ExecuteScalarAsync();
 
-                    return CreatedAtRoute("GetCustomer", new { id = customer.Id }, customer);
+                    return CreatedAtRoute("GetEmployee", new { id = employee.Id }, employee);
                 }
             }
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Customer customer)
+        public async Task<IActionResult> Put(int id, [FromBody] Employee employee)
         {
             try
             {
@@ -131,13 +131,13 @@ namespace BangazonAPI.Controllers
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
-                            UPDATE Customer
+                            UPDATE Employee
                             SET FirstName = @firstName
                             -- Set the remaining columns here
                             WHERE Id = @id
                         ";
-                        cmd.Parameters.Add(new SqlParameter("@id", customer.Id));
-                        cmd.Parameters.Add(new SqlParameter("@firstName", customer.FirstName));
+                        cmd.Parameters.Add(new SqlParameter("@id", employee.Id));
+                        cmd.Parameters.Add(new SqlParameter("@firstName", employee.FirstName));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
 
@@ -152,7 +152,7 @@ namespace BangazonAPI.Controllers
             }
             catch (Exception)
             {
-                if (!CustomerExists(id))
+                if (!EmployeeExists(id))
                 {
                     return NotFound();
                 }
@@ -163,13 +163,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //}
-
-        private bool CustomerExists(int id)
+        private bool EmployeeExists(int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -177,7 +171,7 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     // More string interpolation
-                    cmd.CommandText = "SELECT Id FROM Customer WHERE Id = @id";
+                    cmd.CommandText = "SELECT Id FROM Employee WHERE Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
 
                     SqlDataReader reader = cmd.ExecuteReader();
