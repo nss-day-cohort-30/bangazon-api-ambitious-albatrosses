@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ProductsController : Controller
     {
@@ -70,39 +70,47 @@ namespace BangazonAPI.Controllers
         [HttpGet("{id}", Name = "GetProduct")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            using (SqlConnection conn = Connection)
+            if (!ProductExists(id))
             {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                return NotFound();
+            }
+            else
+            {
+                using (SqlConnection conn = Connection)
                 {
-                    cmd.CommandText = @"SELECT 
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"SELECT 
                                             Id, ProductTypeId, 
                                             CustomerId, Price, 
                                             Title, Description, 
                                             Quantity 
                                         FROM Product
                                         WHERE Id = @id";
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-                    SqlDataReader reader = cmd.ExecuteReader();
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = cmd.ExecuteReader();
 
-                    Product product = null;
+                        Product product = null;
 
-                    if (reader.Read())
-                    {
-                        product = new Product
+                        if (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId")),
-                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
-                            Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                            Title = reader.GetString(reader.GetOrdinal("Title")),
-                            Description = reader.GetString(reader.GetOrdinal("Description")),
-                            Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"))
-                        };
-                    }
-                    reader.Close();
+                            product = new Product
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"))
+                            };
+                        }
+                        reader.Close();
 
-                    return Ok(product);
+                        return Ok(product);
+
+                    }
                 }
             }
         }
