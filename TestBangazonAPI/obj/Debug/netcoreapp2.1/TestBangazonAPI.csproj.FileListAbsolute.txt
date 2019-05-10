@@ -12,3 +12,9 @@
 /Users/chortlehoort/dev/github/nss/csharp-api-boilerplate/TestBangazonAPI/obj/Debug/netcoreapp2.1/TestBangazonAPI.AssemblyInfo.cs
 /Users/chortlehoort/dev/github/nss/csharp-api-boilerplate/TestBangazonAPI/obj/Debug/netcoreapp2.1/TestBangazonAPI.dll
 /Users/chortlehoort/dev/github/nss/csharp-api-boilerplate/TestBangazonAPI/obj/Debug/netcoreapp2.1/TestBangazonAPI.pdb
+C:\Users\baile\workspace\groupProjects\ambitiousAlbatroses\bangazon-api-ambitious-albatrosses\TestBangazonAPI\obj\Debug\netcoreapp2.1\TestBangazonAPI.csprojAssemblyReference.cache
+C:\Users\baile\workspace\groupProjects\ambitiousAlbatroses\bangazon-api-ambitious-albatrosses\TestBangazonAPI\obj\Debug\netcoreapp2.1\TestBangazonAPI.csproj.CoreCompileInputs.cache
+C:\Users\baile\workspace\groupProjects\ambitiousAlbatroses\bangazon-api-ambitious-albatrosses\TestBangazonAPI\obj\Debug\netcoreapp2.1\TestBangazonAPI.AssemblyInfoInputs.cache
+C:\Users\baile\workspace\groupProjects\ambitiousAlbatroses\bangazon-api-ambitious-albatrosses\TestBangazonAPI\obj\Debug\netcoreapp2.1\TestBangazonAPI.AssemblyInfo.cs
+C:\Users\baile\workspace\groupProjects\ambitiousAlbatroses\bangazon-api-ambitious-albatrosses\TestBangazonAPI\obj\Debug\netcoreapp2.1\TestBangazonAPI.dll
+C:\Users\baile\workspace\groupProjects\ambitiousAlbatroses\bangazon-api-ambitious-albatrosses\TestBangazonAPI\obj\Debug\netcoreapp2.1\TestBangazonAPI.pdb
