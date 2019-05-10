@@ -11,7 +11,7 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("BangazonAPI", "c:\\Users\\warne\\workspace\\bangazon-api\\bangazon-api-ambitious-albatrosses\\Bangazon" +
+[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("BangazonAPI", "C:\\Users\\warne\\workspace\\bangazon-api\\bangazon-api-ambitious-albatrosses\\Bangazon" +
     "API", "BangazonAPI.csproj", "0")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("TestBangazonAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
