@@ -14,8 +14,8 @@ namespace BangazonAPI.Controllers
     [Route("/[controller]")]
     [ApiController]
     public class TrainingProgramsController : ControllerBase
-    { 
-   
+    {
+
         private readonly IConfiguration _config;
 
         public TrainingProgramsController(IConfiguration config)
@@ -40,33 +40,33 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, PurchaseDate, DecomissionDate, Make, Manufacturer FROM Computer";
+                    cmd.CommandText = "SELECT Id, Name, StartDate, EndDate, MaxAttendees FROM TrainingProgram";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    List<Computer> computers = new List<Computer>();
+                    List<TrainingProgram> trainingPrograms = new List<TrainingProgram>();
                     while (reader.Read())
                     {
-                        Computer computer = new Computer
+                        TrainingProgram trainingProgram = new TrainingProgram
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
-                            DecomissionDate = reader.GetDateTime(reader.GetOrdinal("DecomissionDate")),
-                            Make = reader.GetString(reader.GetOrdinal("Make")),
-                            Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                            EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
+                            MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),
                         };
 
-                        computers.Add(computer);
+                        trainingPrograms.Add(trainingProgram);
                     }
 
                     reader.Close();
 
-                    return Ok(computers);
+                    return Ok(trainingPrograms);
                 }
             }
         }
 
         // GET/values/5
-        [HttpGet("{id}", Name = "GetComputer")]
+        [HttpGet("{id}", Name = "GetTrainingProgram")]
         public async Task<IActionResult> Get(int id)
         {
             using (SqlConnection conn = Connection)
@@ -75,35 +75,36 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT PurchaseDate, DecomissionDate, Make, Manufacturer
-                    FROM Computer
+                    SELECT Name, StartDate, EndDate, MaxAttendees
+                    FROM TrainingProgram
                     WHERE Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    Computer computer = null;
+                    TrainingProgram trainingProgram = null;
+
                     if (reader.Read())
                     {
-                        computer = new Computer
+                        trainingProgram = new TrainingProgram
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
-                            DecomissionDate = reader.GetDateTime(reader.GetOrdinal("DecomissionDate")),
-                            Make = reader.GetString(reader.GetOrdinal("Make")),
-                            Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                            EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
+                            MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),
                         };
                     }
 
                     reader.Close();
 
-                    return Ok(computer);
+                    return Ok(trainingProgram);
                 }
             }
         }
 
         //PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Computer computer)
+        public async Task<IActionResult> Put(int id, [FromBody] TrainingProgram trainingProgram)
         {
             try
             {
@@ -113,14 +114,18 @@ namespace BangazonAPI.Controllers
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
-                            UPDATE Customer
-                            SET FirstName = @firstName
-                            -- Set the remaining columns here
+                            UPDATE TrainingProgram
+                            SET Name = @Name
+                            SET StartDate = @StartDate
+                            SET EndDate = @EndDate
+                            SET MaxAttendees = @MaxAttendees
                             WHERE Id = @id
                         ";
-                        cmd.Parameters.Add(new SqlParameter("@id", computer.Id));
-                        cmd.Parameters.Add(new SqlParameter("@firstName", computer.PurchaseDate));
-                        cmd.Parameters.Add(new SqlParameter("@firstName", computer.DecomissionDate));
+                        cmd.Parameters.Add(new SqlParameter("@id", trainingProgram.Id));
+                        cmd.Parameters.Add(new SqlParameter("@Name", trainingProgram.Name));
+                        cmd.Parameters.Add(new SqlParameter("@StartDate", trainingProgram.StartDate));
+                        cmd.Parameters.Add(new SqlParameter("@EndDate", trainingProgram.EndDate));
+                        cmd.Parameters.Add(new SqlParameter("@MaxAttendees", trainingProgram.MaxAttendees));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
 
@@ -136,7 +141,7 @@ namespace BangazonAPI.Controllers
 
             catch (Exception)
             {
-                if (!ComputerExists(id))
+                if (!TrainingProgramExists(id))
                 {
                     return NotFound();
                 }
@@ -146,7 +151,7 @@ namespace BangazonAPI.Controllers
                 }
             }
         }
-        private bool ComputerExists(int id)
+        private bool TrainingProgramExists(int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -154,8 +159,8 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, PurchaseDate, DecomissionDate, Make, Manufacturer
-                        FROM Computer
+                        SELECT Id, Name, StartDate, EndDate, MaxAttendees
+                        FROM TrainingProgram
                         WHERE Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
 
@@ -167,27 +172,26 @@ namespace BangazonAPI.Controllers
 
         // POST /values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Computer computer)
+        public async Task<IActionResult> Post([FromBody] TrainingProgram trainingProgram)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    // More string interpolation
                     cmd.CommandText = @"
-                        INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
+                        INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
                         OUTPUT INSERTED.Id
-                        VALUES (@PurchaseDate, @DecomissionDate, @Make, @Manufacturer)";
-                    cmd.Parameters.Add(new SqlParameter("@PurchaseDate", computer.PurchaseDate));
-                    cmd.Parameters.Add(new SqlParameter("@DecomissionDate", computer.DecomissionDate));
-                    cmd.Parameters.Add(new SqlParameter("@Make", computer.Make));
-                    cmd.Parameters.Add(new SqlParameter("@Manufacturer", computer.Manufacturer));
+                        VALUES (@Name, @StartDate, @EndDate, @MaxAttendees)";
+                    cmd.Parameters.Add(new SqlParameter("@Name", trainingProgram.Name));
+                    cmd.Parameters.Add(new SqlParameter("@StartDate", trainingProgram.StartDate));
+                    cmd.Parameters.Add(new SqlParameter("@EndDate", trainingProgram.EndDate));
+                    cmd.Parameters.Add(new SqlParameter("@MaxAttendees", trainingProgram.MaxAttendees));
 
                     int newId = (int)await cmd.ExecuteScalarAsync();
-                    computer.Id = newId;
+                    trainingProgram.Id = newId;
 
-                    return CreatedAtRoute("GetComputer", new { id = newId }, computer);
+                    return CreatedAtRoute("GetTrainingProgram", new { id = newId }, trainingProgram);
                 }
             }
         }
@@ -201,7 +205,7 @@ namespace BangazonAPI.Controllers
                     conn.Open();
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = @"DELETE FROM Computer WHERE Id = @id";
+                        cmd.CommandText = @"DELETE FROM TrainingProgram WHERE Id = @id";
                         cmd.Parameters.Add(new SqlParameter("@id", id));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
@@ -215,7 +219,7 @@ namespace BangazonAPI.Controllers
             }
             catch (Exception)
             {
-                if (!ComputerExists(id))
+                if (!TrainingProgramExists(id))
                 {
                     return NotFound();
                 }
