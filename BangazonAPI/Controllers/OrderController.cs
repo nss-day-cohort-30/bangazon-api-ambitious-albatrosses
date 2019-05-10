@@ -30,7 +30,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values -- WORKING
+        // GET api/values 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -63,7 +63,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values/# -- WORKING
+        // GET api/values/# 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
