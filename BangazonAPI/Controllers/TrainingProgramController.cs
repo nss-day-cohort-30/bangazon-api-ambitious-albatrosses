@@ -60,7 +60,6 @@ namespace BangazonAPI.Controllers
                                 EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
                                 MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),                     
                             };
-
                         }
                         programHash[programId].EmployeesAssigned.Add(new Employee
                         {
