@@ -44,8 +44,8 @@ namespace TestBangazonAPI
                 var paymentType = JsonConvert.DeserializeObject<PaymentType>(responseBody);
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                Assert.Equal(12345, paymentType.AccountNumber);
-                Assert.Equal("New Acct Name For Test", paymentType.Name);
+                Assert.Equal(2468, paymentType.AccountNumber);
+                Assert.Equal("ConnorAccount3", paymentType.Name);
                 Assert.NotNull(paymentType);
             }
         }
@@ -56,8 +56,8 @@ namespace TestBangazonAPI
 
             using (var client = new APIClientProvider().Client)
             {
-                var response = await client.GetAsync("/student/999999999");
-                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+                var response = await client.GetAsync("/PaymentType/999999999");
+                Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
             }
         }
 
@@ -70,7 +70,7 @@ namespace TestBangazonAPI
                 PaymentType newPaymentType = new PaymentType
                 {
                     Name = "Test Payment Account 1",
-                    AccountNumber = 319992,
+                    AccountNumber = 13579,
                     CustomerId = 1
                 };
                 var paymentTypeAsJSON = JsonConvert.SerializeObject(newPaymentType);
@@ -88,7 +88,7 @@ namespace TestBangazonAPI
 
                 Assert.Equal(HttpStatusCode.Created, response.StatusCode);
                 Assert.Equal("Test Payment Account 1", newerPaymentType.Name);
-                Assert.Equal(319992, newerPaymentType.AccountNumber);
+                Assert.Equal(13579, newerPaymentType.AccountNumber);
                 Assert.Equal(1, newerPaymentType.CustomerId);
 
 

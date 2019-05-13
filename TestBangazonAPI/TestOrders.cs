@@ -46,7 +46,7 @@ namespace TestBangazonAPI
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 Assert.Equal(1, order.Id);
                 Assert.Equal(1, order.CustomerId);
-                Assert.Equal(4, order.PaymentTypeId);
+                Assert.Equal(1, order.PaymentTypeId);
                 Assert.NotNull(order);
             }
         }
@@ -70,7 +70,7 @@ namespace TestBangazonAPI
             {
                 Order newOrder = new Order
                 {
-                    PaymentTypeId = 4,
+                    PaymentTypeId = 3,
                     CustomerId = 1
                 };
                 var orderAsJSON = JsonConvert.SerializeObject(newOrder);
@@ -88,7 +88,7 @@ namespace TestBangazonAPI
 
                 Assert.Equal(HttpStatusCode.Created, response.StatusCode);
                 Assert.Equal(1, newerOrder.CustomerId);
-                Assert.Equal(4, newerOrder.PaymentTypeId);
+                Assert.Equal(3, newerOrder.PaymentTypeId);
 
                 var deleteResponse = await client.DeleteAsync($"/Order/{newerOrder.Id}");
                 deleteResponse.EnsureSuccessStatusCode();
@@ -127,7 +127,7 @@ namespace TestBangazonAPI
                 var modifiedOrderAsJSON = JsonConvert.SerializeObject(modifiedOrder);
 
                 var response = await client.PutAsync(
-                    "/Order/6",
+                    "/Order/1",
                     new StringContent(modifiedOrderAsJSON, Encoding.UTF8, "application/json")
                 );
                 response.EnsureSuccessStatusCode();
@@ -138,7 +138,7 @@ namespace TestBangazonAPI
                 /*
                     GET section
                  */
-                var getOrder = await client.GetAsync("/Order/6");
+                var getOrder = await client.GetAsync("/Order/1");
                 getOrder.EnsureSuccessStatusCode();
 
                 string getOrderBody = await getOrder.Content.ReadAsStringAsync();

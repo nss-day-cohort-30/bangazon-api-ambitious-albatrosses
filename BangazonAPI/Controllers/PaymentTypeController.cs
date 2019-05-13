@@ -65,7 +65,7 @@ namespace BangazonAPI.Controllers
         }
 
         // GET api/values/# 
-        [HttpGet("{id}", Name = "GetPaymentTYpe")]
+        [HttpGet("{id}", Name = "GetPaymentType")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             using (SqlConnection conn = Connection)
