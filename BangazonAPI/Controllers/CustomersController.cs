@@ -112,7 +112,7 @@ namespace BangazonAPI.Controllers
                     ";
                     cmd.Parameters.Add(new SqlParameter("@firstName", customer.FirstName));
 
-                    customer.Id = (int) await cmd.ExecuteScalarAsync();
+                    customer.Id = (int)await cmd.ExecuteScalarAsync();
 
                     return CreatedAtRoute("GetCustomer", new { id = customer.Id }, customer);
                 }
@@ -164,10 +164,10 @@ namespace BangazonAPI.Controllers
         }
 
         // DELETE api/values/5
-        //        [HttpDelete("{id}")]
-        //        public async Task<IActionResult> Delete(int id)
-        //        {
-        //        }
+        [HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //}
 
         private bool CustomerExists(int id)
         {
