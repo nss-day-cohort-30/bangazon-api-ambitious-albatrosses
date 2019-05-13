@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
-    [Route("/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PaymentTypeController : ControllerBase
     {
@@ -65,7 +65,7 @@ namespace BangazonAPI.Controllers
         }
 
         // GET api/values/# 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetPaymentTYpe")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             using (SqlConnection conn = Connection)
