@@ -20,5 +20,7 @@ namespace BangazonAPI.Models
 
         public int MaxAttendees { get; set; }
 
+        public List<Employee> EmployeesAssigned { get; set; } = new List<Employee>();
+
     }
 }
