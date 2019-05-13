@@ -60,32 +60,39 @@ namespace BangazonAPI.Controllers
         [HttpGet("{id}", Name = "GetProductType")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            using (SqlConnection conn = Connection)
+            if (!ProductTypeExists(id))
             {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                return NotFound();
+            }
+            else
+            {
+                using (SqlConnection conn = Connection)
                 {
-                    cmd.CommandText = @"
-                        SELECT
-                            Id, [Name]
-                        FROM ProductType
-                        WHERE Id = @id";
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    ProductType productType = null;
-
-                    if (reader.Read())
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        productType = new ProductType
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name"))
-                        };
-                    }
-                    reader.Close();
+                        cmd.CommandText = @"
+                            SELECT
+                                Id, [Name]
+                            FROM ProductType
+                            WHERE Id = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = cmd.ExecuteReader();
 
-                    return Ok(productType);
+                        ProductType productType = null;
+
+                        if (reader.Read())
+                        {
+                            productType = new ProductType
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name"))
+                            };
+                        }
+                        reader.Close();
+
+                        return Ok(productType);
+                    }
                 }
             }
         }
