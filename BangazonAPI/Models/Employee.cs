@@ -20,6 +20,6 @@ namespace BangazonAPI.Models
 
         [Required]
         [Range(0, 1)]
-        public int IsSuperVisor { get; set; }
+        public bool IsSuperVisor { get; set; }
     }
 }

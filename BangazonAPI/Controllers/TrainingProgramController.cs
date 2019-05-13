@@ -39,8 +39,7 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"select [Name], tp.id AS TPId, e.id AS EmployeeId, StartDate, EndDate, MaxAttendees,
-                                FirstName, LastName from Employee e
+                    cmd.CommandText = @"select [Name], tp.id AS TPId, e.id AS EmployeeId, StartDate, EndDate,                MaxAttendees, DepartmentId, IsSuperVisor, FirstName, LastName from Employee e
                                 LEFT JOIN EmployeeTraining et on et.EmployeeId = e.Id
                                 LEFT JOIN TrainingProgram tp on et.TrainingProgramId = tp.Id";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
@@ -67,7 +66,10 @@ namespace BangazonAPI.Controllers
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("EmployeeId")),
                             FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
+                            DepartmentId = reader.GetInt32(reader.GetOrdinal("DepartmentId"))
+
                         });
 
                     }
