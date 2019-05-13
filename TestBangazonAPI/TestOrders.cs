@@ -127,7 +127,7 @@ namespace TestBangazonAPI
                 var modifiedOrderAsJSON = JsonConvert.SerializeObject(modifiedOrder);
 
                 var response = await client.PutAsync(
-                    "/Order/1",
+                    "/Order/4",
                     new StringContent(modifiedOrderAsJSON, Encoding.UTF8, "application/json")
                 );
                 response.EnsureSuccessStatusCode();
@@ -138,7 +138,7 @@ namespace TestBangazonAPI
                 /*
                     GET section
                  */
-                var getOrder = await client.GetAsync("/Order/1");
+                var getOrder = await client.GetAsync("/Order/4");
                 getOrder.EnsureSuccessStatusCode();
 
                 string getOrderBody = await getOrder.Content.ReadAsStringAsync();

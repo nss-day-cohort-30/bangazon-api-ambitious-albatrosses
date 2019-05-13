@@ -131,7 +131,7 @@ namespace TestBangazonAPI
                 var modifiedPaymentTypeAsJSON = JsonConvert.SerializeObject(modifiedPaymentType);
 
                 var response = await client.PutAsync(
-                    "/PaymentType/3",
+                    "/PaymentType/4",
                     new StringContent(modifiedPaymentTypeAsJSON, Encoding.UTF8, "application/json")
                 );
                 response.EnsureSuccessStatusCode();
@@ -142,7 +142,7 @@ namespace TestBangazonAPI
                 /*
                     GET section
                  */
-                var getPaymentType = await client.GetAsync("/PaymentType/3");
+                var getPaymentType = await client.GetAsync("/PaymentType/4");
                 getPaymentType.EnsureSuccessStatusCode();
 
                 string getPaymentTypeBody = await getPaymentType.Content.ReadAsStringAsync();
