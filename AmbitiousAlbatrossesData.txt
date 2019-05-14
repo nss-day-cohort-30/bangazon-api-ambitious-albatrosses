@@ -183,3 +183,39 @@ INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quant
 VALUES (2, 1, 25.99, 'Albatross Sweater', 'A comfy knitted sweater with a giant Albatross embroidered on the front', 26);
 INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quantity)
 VALUES (3, 1, 10.02, 'Songs of the Albatross', 'Soothing sounds of albatrosses', 4);
+
+INSERT INTO Department (Name, Budget)
+VALUES ('Department1', 1000);
+INSERT INTO Department (Name, Budget)
+VALUES ('Department2', 2000);
+INSERT INTO Department (Name, Budget)
+VALUES ('Department3', 3000);
+INSERT INTO Department (Name, Budget)
+VALUES ('Department4', 4000);
+
+INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor)
+Values ('Warner', 'Carpenter', 1, 1);
+INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor)
+Values ('Kirren', 'Covey', 2, 0);
+INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor)
+Values ('Stephen', 'Clark', 3, 1);
+INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor)
+Values ('Connor', 'Bailey', 4, 0);
+
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
+VALUES ('20120618 10:34:09 AM', NULL, 'Make 1', 'Manufacturer1');
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
+VALUES ('20130618 9:34:09 AM', NULL, 'Make 2', 'Manufacturer2');
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
+VALUES ('20140618 8:34:09 AM', NULL, 'Make 3', 'Manufacturer3');
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
+VALUES ('20150618 7:34:09 AM', NULL, 'Make 4', 'Manufacturer4');
+
+INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
+VALUES (1, 1, '20120618 10:34:09 AM', NULL);
+INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
+VALUES (2, 2, '20130618 9:34:09 AM', NULL);
+INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
+VALUES (3, 3, '20140618 8:34:09 AM', NULL);
+INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
+VALUES (4, 4, '20150618 7:34:09 AM', NULL);
