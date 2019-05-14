@@ -176,6 +176,8 @@ INSERT INTO ProductType (Name)
 Values ('Clothing')
 INSERT INTO ProductType (Name)
 Values ('Music')
+INSERT INTO ProductType (Name)
+Values ('Technology')
 
 INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quantity)
 VALUES (1, 1, 36.95, 'Albatrosses of the World', 'A photography-filled guidebook through everything Albatross', 12);
