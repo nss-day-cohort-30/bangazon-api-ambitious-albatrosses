@@ -39,26 +39,67 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, CustomerId, PaymentTypeId " +
-                        "FROM [Order]";
+                    cmd.CommandText = @"select o.Id, o.CustomerId, o.PaymentTypeId,
+                                            p.Id ProductId, p.Title, p.[Description], p.Price, p.Quantity, p.ProductTypeId, p.CustomerId
+                                        from OrderProduct op
+                                        join [Order] o on o.Id = op.OrderId
+                                        join Product p on p.Id = op.ProductId
+                                        ; ";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     List<Order> orders = new List<Order>();
+
                     while (reader.Read())
                     {
-                        Order order = new Order
+                        if (orders.Count < reader.GetInt32(reader.GetOrdinal("Id")))
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
-                            PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
-                        };
+                            Order order = new Order
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
+                            };
 
-                        orders.Add(order);
+                            if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                            {
+                                Product product = new Product
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                    Title = reader.GetString(reader.GetOrdinal("Title")),
+                                    Description = reader.GetString(reader.GetOrdinal("Description")),
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                    Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                    CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                    ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                };
+
+                                order.Products.Add(product);
+                            }
+                            orders.Add(order);
+                        }
+                        else
+                        {
+                            if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                            {
+                                Product product = new Product
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                    Title = reader.GetString(reader.GetOrdinal("Title")),
+                                    Description = reader.GetString(reader.GetOrdinal("Description")),
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                    Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                    CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                    ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                };
+
+                                orders[reader.GetInt32(reader.GetOrdinal("Id")) - 1].Products.Add(product);
+                            }
+                        }
+
                     }
+                        reader.Close();
 
-                    reader.Close();
-
-                    return Ok(orders);
+                        return Ok(orders);
                 }
             }
         }
