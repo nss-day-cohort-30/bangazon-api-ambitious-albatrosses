@@ -23,7 +23,7 @@ namespace TestBangazonAPI
                 /*
                     ACT
                 */
-                var response = await client.GetAsync("/api/customers");
+                var response = await client.GetAsync("/customers");
 
 
                 string responseBody = await response.Content.ReadAsStringAsync();

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
@@ -164,7 +164,11 @@ namespace BangazonAPI.Controllers
         }
 
         // DELETE api/values/5
+<<<<<<< HEAD
         //[HttpDelete("{id}")]
+=======
+        [HttpDelete("{id}")]
+>>>>>>> master
         //public async Task<IActionResult> Delete(int id)
         //{
         //}
