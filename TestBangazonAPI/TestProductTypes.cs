@@ -10,7 +10,7 @@ using System.Text;
 
 namespace TestBangazonAPI
 {
-    public class ProductTypes
+    public class TestProductTypes
     {
         [Fact]
         public async Task Test_Get_All_ProductTypes()
@@ -103,7 +103,7 @@ namespace TestBangazonAPI
         public async Task Test_Modify_ProductType()
         {
             // New quantity to change to and test
-            string newName = "Music";
+            string newName = "Electronics";
 
             using (var client = new APIClientProvider().Client)
             {
@@ -117,7 +117,7 @@ namespace TestBangazonAPI
                 var modifiedProductTypeAsJSON = JsonConvert.SerializeObject(modifiedProductType);
 
                 var response = await client.PutAsync(
-                    "/productTypes/1002",
+                    "/productTypes/4",
                     new StringContent(modifiedProductTypeAsJSON, Encoding.UTF8, "application/json")
                 );
                 response.EnsureSuccessStatusCode();
@@ -128,7 +128,7 @@ namespace TestBangazonAPI
                 /*
                     GET section
                  */
-                var getTestProductType = await client.GetAsync("/productTypes/1002");
+                var getTestProductType = await client.GetAsync("/productTypes/4");
                 getTestProductType.EnsureSuccessStatusCode();
 
                 string getTestProductTypeBody = await getTestProductType.Content.ReadAsStringAsync();

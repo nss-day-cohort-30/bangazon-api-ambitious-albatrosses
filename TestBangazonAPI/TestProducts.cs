@@ -10,7 +10,7 @@ using System.Text;
 
 namespace TestBangazonAPI
 {
-    public class Products
+    public class TestProducts
     {
         [Fact]
         public async Task Test_Get_All_Products()
@@ -32,7 +32,7 @@ namespace TestBangazonAPI
         {
             using (var client = new APIClientProvider().Client)
             {
-                var response = await client.GetAsync("/products/3");
+                var response = await client.GetAsync("/products/2");
 
                 response.EnsureSuccessStatusCode();
 
@@ -40,7 +40,7 @@ namespace TestBangazonAPI
                 var product = JsonConvert.DeserializeObject<Product>(responseBody);
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                Assert.Equal(3, product.ProductTypeId);
+                Assert.Equal(2, product.ProductTypeId);
                 Assert.Equal(1, product.CustomerId);
                 Assert.Equal("Albatross Sweater", product.Title);
                 Assert.NotNull(product);
@@ -112,7 +112,7 @@ namespace TestBangazonAPI
         public async Task Test_Modify_Product()
         {
             // New quantity to change to and test
-            int newQuantity = 36;
+            string newDescription = "Enjoy the soothing sounds of the majestic albatross";
 
             using (var client = new APIClientProvider().Client)
             {
@@ -121,17 +121,17 @@ namespace TestBangazonAPI
                  */
                 Product modifiedProduct = new Product
                 {
-                    Title = "Fake Product",
-                    Description = "This is for testing, not real",
-                    Quantity = newQuantity,
-                    Price = 37m,
+                    Title = "Songs of the Albatross",
+                    Description = newDescription,
+                    Quantity = 4,
+                    Price = 10.02m,
                     ProductTypeId = 3,
                     CustomerId = 1
                 };
                 var modifiedProductAsJSON = JsonConvert.SerializeObject(modifiedProduct);
 
                 var response = await client.PutAsync(
-                    "/products/1003",
+                    "/products/3",
                     new StringContent(modifiedProductAsJSON, Encoding.UTF8, "application/json")
                 );
                 response.EnsureSuccessStatusCode();
@@ -142,14 +142,14 @@ namespace TestBangazonAPI
                 /*
                     GET section
                  */
-                var getTestProduct = await client.GetAsync("/products/1003");
+                var getTestProduct = await client.GetAsync("/products/3");
                 getTestProduct.EnsureSuccessStatusCode();
 
                 string getTestProductBody = await getTestProduct.Content.ReadAsStringAsync();
                 Product newTestProduct = JsonConvert.DeserializeObject<Product>(getTestProductBody);
 
                 Assert.Equal(HttpStatusCode.OK, getTestProduct.StatusCode);
-                Assert.Equal(newQuantity, newTestProduct.Quantity);
+                Assert.Equal(newDescription, newTestProduct.Description);
             }
         }
     }
