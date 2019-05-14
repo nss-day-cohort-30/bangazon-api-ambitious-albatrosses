@@ -169,3 +169,17 @@ INSERT INTO [Order] (CustomerId, PaymentTypeId)
 VALUES (1, 3);
 INSERT INTO [Order] (CustomerId, PaymentTypeId)
 VALUES (1, 3);
+
+INSERT INTO ProductType (Name)
+Values ('Books')
+INSERT INTO ProductType (Name)
+Values ('Clothing')
+INSERT INTO ProductType (Name)
+Values ('Music')
+
+INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quantity)
+VALUES (1, 1, 36.95, 'Albatrosses of the World', 'A photography-filled guidebook through everything Albatross', 12);
+INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quantity)
+VALUES (2, 1, 25.99, 'Albatross Sweater', 'A comfy knitted sweater with a giant Albatross embroidered on the front', 26);
+INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quantity)
+VALUES (3, 1, 10.02, 'Songs of the Albatross', 'Soothing sounds of albatrosses', 4);
