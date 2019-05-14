@@ -30,38 +30,67 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string refine)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, FirstName, LastName " +
-                        "FROM Customer";
-                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
-
-                    List<Customer> customers = new List<Customer>();
-                    while (reader.Read())
+                    if (refine == "noOrders")
                     {
-                        Customer customer = new Customer
+                        cmd.CommandText = "SELECT c.Id, c.FirstName, c.LastName " +
+                            "FROM Customer c " +
+                            "LEFT JOIN [Order] o " +
+                            "ON c.Id = o.CustomerId " +
+                            "WHERE o.CustomerId IS NULL";
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            LastName = reader.GetString(reader.GetOrdinal("LastName"))
-                        };
+                            Customer customer = new Customer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                            };
 
-                        customers.Add(customer);
+                            customers.Add(customer);
+                        }
+
+                        reader.Close();
+
+                        return Ok(customers);
                     }
+                    else
+                    {
+                        cmd.CommandText = "SELECT Id, FirstName, LastName " +
+                            "FROM Customer";
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    reader.Close();
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
+                        {
+                            Customer customer = new Customer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                            };
 
-                    return Ok(customers);
+                            customers.Add(customer);
+                        }
+
+                        reader.Close();
+
+                        return Ok(customers);
+                    }
                 }
             }
         }
+
 
         // GET api/values/# 
         [HttpGet("{id}", Name = "GetCustomer")]
@@ -93,42 +122,6 @@ namespace BangazonAPI.Controllers
                     reader.Close();
 
                     return Ok(customer);
-                }
-            }
-        }
-
-        //GET CUSTOMERS WITHOUT ORDERS api/values
-        [HttpGet]
-        public async Task<IActionResult> Get(string NoOrders)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT Id, FirstName, LastName " +
-                        "FROM Customer c " +
-                        "LEFT JOIN [Order] o " +
-                        "ON c.Id = o.CustomerId " +
-                        "WHERE o.CustomerId IS NULL";
-                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
-
-                    List<Customer> customers = new List<Customer>();
-                    while (reader.Read())
-                    {
-                        Customer customer = new Customer
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            LastName = reader.GetString(reader.GetOrdinal("LastName"))
-                        };
-
-                        customers.Add(customer);
-                    }
-
-                    reader.Close();
-
-                    return Ok(customers);
                 }
             }
         }
