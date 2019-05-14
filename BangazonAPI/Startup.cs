@@ -40,7 +40,6 @@ namespace BangazonAPI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
