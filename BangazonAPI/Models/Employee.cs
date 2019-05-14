@@ -19,7 +19,9 @@ namespace BangazonAPI.Models
         public int DepartmentId { get; set; }
 
         [Required]
-        [Range(0, 1)]
         public bool IsSuperVisor { get; set; }
+
+        public Department Department { get; set; }
+        public Computer Computer { get; set; }
     }
 }
