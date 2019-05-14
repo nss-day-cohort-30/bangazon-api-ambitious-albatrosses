@@ -32,16 +32,36 @@ namespace BangazonAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string completed)
         {
+            string sql
+            = @"select [Name], tp.id AS TPId, e.id AS EmployeeId, StartDate, EndDate,                MaxAttendees, DepartmentId, IsSuperVisor, FirstName, LastName from Employee e
+                                LEFT JOIN EmployeeTraining et on et.EmployeeId = e.Id
+                                LEFT JOIN TrainingProgram tp on et.TrainingProgramId = tp.Id";
+
+            DateTime currentDateTime = DateTime.UtcNow;
+
+            if (completed == "false")
+            {
+                sql = $"{sql} WHERE tp.StartDate >= @currentDateTime";
+            }
+            else if (completed =="true")
+            {
+                sql = $"{sql} WHERE tp.StartDate < @currentDateTime";
+            }
+
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"select [Name], tp.id AS TPId, e.id AS EmployeeId, StartDate, EndDate,                MaxAttendees, DepartmentId, IsSuperVisor, FirstName, LastName from Employee e
-                                LEFT JOIN EmployeeTraining et on et.EmployeeId = e.Id
-                                LEFT JOIN TrainingProgram tp on et.TrainingProgramId = tp.Id";
+                    cmd.CommandText = sql;
+
+                    if (completed != null)
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@currentDateTime", currentDateTime));
+                    }
+
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     Dictionary<int, TrainingProgram> programHash = new Dictionary<int, TrainingProgram>();
@@ -58,8 +78,8 @@ namespace BangazonAPI.Controllers
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
                                 EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
-                                MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),                     
-                            };
+                                MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),
+                            };                           
                         }
                         programHash[programId].EmployeesAssigned.Add(new Employee
                         {
@@ -68,17 +88,20 @@ namespace BangazonAPI.Controllers
                             LastName = reader.GetString(reader.GetOrdinal("LastName")),
                             IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
                             DepartmentId = reader.GetInt32(reader.GetOrdinal("DepartmentId"))
-
                         });
 
                     }
-                        List<TrainingProgram> trainingPrograms = programHash.Values.ToList();
-                        reader.Close();
 
-                        return Ok(trainingPrograms);
+                    List<TrainingProgram> trainingPrograms = programHash.Values.ToList();
+                    reader.Close();
+
+                    return Ok(trainingPrograms);
                 }
             }
         }
+    
+
+
 
 
         // GET/values/5
