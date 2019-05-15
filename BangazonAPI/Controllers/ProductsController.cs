@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Kirren Covey
+// Purpose: This class contains methods for CRUD functionality for the Product resource
+
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -6,11 +9,13 @@ using System.Threading.Tasks;
 using BangazonAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
     [Route("[controller]")]
+    [EnableCors("BangazonOnly")]
     [ApiController]
     public class ProductsController : Controller
     {
@@ -28,6 +33,8 @@ namespace BangazonAPI.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
+
+        // Purpose: get all products in the database
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -67,6 +74,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: get one specficic product in the database using its ID
         [HttpGet("{id}", Name = "GetProduct")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -115,6 +123,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: add a new product to the database
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Product product)
         {
@@ -148,6 +157,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: edit a product in the database using its ID to ensure the proper product is changed
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Product product)
         {
@@ -197,6 +207,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: delete a product from the database using its ID to ensure the proper product is removed
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -232,6 +243,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: check if a product exists in the database, using its ID
         private bool ProductExists(int id)
         {
             using (SqlConnection conn = Connection)

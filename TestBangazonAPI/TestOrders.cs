@@ -109,7 +109,7 @@ namespace TestBangazonAPI
         }
 
         [Fact]
-        public async Task Test_Modify_PaymentType()
+        public async Task Test_Modify_Order()
         {
             // New PaymentId
             int paymentId = 3;
