@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Connor Bailey
+// Purpose: This class contains methods for CRUD functionality for the Order resource
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -39,12 +42,12 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"select o.Id, o.CustomerId, o.PaymentTypeId,
+                    cmd.CommandText = @"SELECT o.Id, o.CustomerId, o.PaymentTypeId,
                                             p.Id ProductId, p.Title, p.[Description], p.Price, p.Quantity, p.ProductTypeId, p.CustomerId
-                                        from OrderProduct op
-                                        join [Order] o on o.Id = op.OrderId
-                                        join Product p on p.Id = op.ProductId
-                                        ; ";
+                                        FROM OrderProduct op
+                                        JOIN[Order] o ON o.Id = op.OrderId
+                                        JOIN Product p ON p.Id = op.ProductId
+                                        ";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     List<Order> orders = new List<Order>();
@@ -104,7 +107,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values/# 
+        // Purpose: get one specficic product in the database using its ID
         [HttpGet("{id}", Name = "GetOrder")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -113,22 +116,44 @@ namespace BangazonAPI.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT
-                            Id, CustomerId, PaymentTypeId
-                            FROM [Order]
-                            WHERE Id = @id";
+                    cmd.CommandText = @"SELECT o.Id, o.CustomerId, o.PaymentTypeId,
+                                            p.Id ProductId, p.Title, p.[Description], p.Price, p.Quantity, p.ProductTypeId, p.CustomerId
+                                        FROM OrderProduct op
+                                        JOIN [Order] o ON o.Id = op.OrderId
+                                        JOIN Product p ON p.Id = op.ProductId
+                                        WHERE o.Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     Order order = null;
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        order = new Order
+                        if (order == null)
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
-                            PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
-                        };
+                            order = new Order
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
+                            };
+                        }
+                        
+
+                        if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                        {
+                            Product product = new Product
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                            };
+
+                            order.Products.Add(product);
+                        }
                     }
 
                     reader.Close();
@@ -138,7 +163,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // POST api/values 
+        // Purpose: add a new product to the database
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Order order)
         {
@@ -163,7 +188,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // PUT api/values/# 
+        // Purpose: edit an order in the database using its ID to ensure the proper order is changed
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Order order)
         {
@@ -208,7 +233,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // DELETE api/values/# 
+        // Purpose: delete an order from the database using its ID to ensure the proper order is removed
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -245,6 +270,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: check if an order exists in the database, using its ID
         private bool OrderExists(int id)
         {
             using (SqlConnection conn = Connection)

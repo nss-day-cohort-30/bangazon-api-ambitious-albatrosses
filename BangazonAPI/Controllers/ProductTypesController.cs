@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Kirren Covey
+// Purpose: This class contains methods for CRUD functionality for the ProductTypes resource
+
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
