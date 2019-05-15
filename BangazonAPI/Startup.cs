@@ -33,7 +33,7 @@ namespace BangazonAPI
                 options.AddPolicy("BangazonOnly",
                 builder =>
                 {
-                    builder.WithOrigins("http://www.bangazon.com:8080").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://www.bangazon.com:8080", "http://www.bangazon.com:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
 
