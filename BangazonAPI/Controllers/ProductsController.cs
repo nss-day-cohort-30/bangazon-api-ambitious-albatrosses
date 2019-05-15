@@ -35,6 +35,7 @@ namespace BangazonAPI.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
+
         /// <summary>
         /// Purpose: get all products in the database
         /// </summary>
