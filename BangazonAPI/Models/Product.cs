@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Kirren Covey
+// Purpose: This class is the model that defines the product resource and contains all the properties of products
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

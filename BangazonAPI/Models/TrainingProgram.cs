@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Stephen Cook
+// Purpose: This class is the model that defines the training program resource and contains all the properties of training programs
+
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Linq;

@@ -41,7 +41,7 @@ namespace TestBangazonAPI
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 Assert.Equal(1, department.Id);
-                Assert.Equal("Department1", department.Name);
+                Assert.Equal("Accounting", department.Name);
                 Assert.NotNull(department);
             }
         }

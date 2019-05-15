@@ -187,13 +187,13 @@ INSERT INTO Product (ProductTypeId, CustomerId, Price, Title, Description, Quant
 VALUES (3, 1, 10.02, 'Songs of the Albatross', 'Soothing sounds of albatrosses', 4);
 
 INSERT INTO Department (Name, Budget)
-VALUES ('Department1', 1000);
+VALUES ('Accounting', 1000);
 INSERT INTO Department (Name, Budget)
-VALUES ('Department2', 2000);
+VALUES ('Marketing', 2000);
 INSERT INTO Department (Name, Budget)
-VALUES ('Department3', 3000);
+VALUES ('Human Resources', 3000);
 INSERT INTO Department (Name, Budget)
-VALUES ('Department4', 4000);
+VALUES ('Information Technology', 4000);
 
 INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor)
 Values ('Warner', 'Carpenter', 1, 1);
@@ -205,13 +205,13 @@ INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor)
 Values ('Connor', 'Bailey', 4, 0);
 
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
-VALUES ('20120618 10:34:09 AM', NULL, 'Make 1', 'Manufacturer1');
+VALUES ('20120618 10:34:09 AM', NULL, 'Inspiron', 'Dell');
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
-VALUES ('20130618 9:34:09 AM', NULL, 'Make 2', 'Manufacturer2');
+VALUES ('20130618 9:34:09 AM', NULL, 'Macbook Pro', 'Apple');
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
-VALUES ('20140618 8:34:09 AM', NULL, 'Make 3', 'Manufacturer3');
+VALUES ('20140618 8:34:09 AM', NULL, 'ZenBook', 'Asus');
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
-VALUES ('20150618 7:34:09 AM', NULL, 'Make 4', 'Manufacturer4');
+VALUES ('20150618 7:34:09 AM', NULL, '64', 'Commodore');
 
 INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
 VALUES (1, 1, '20120618 10:34:09 AM', NULL);
@@ -239,3 +239,10 @@ INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
 VALUES (1, 2 );
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
 VALUES (2, 1 );
+
+INSERT INTO OrderProduct (OrderId, ProductId)
+VALUES (1, 1);
+INSERT INTO OrderProduct (OrderId, ProductId)
+VALUES (1, 2);
+INSERT INTO OrderProduct (OrderId, ProductId)
+VALUES (2, 3);

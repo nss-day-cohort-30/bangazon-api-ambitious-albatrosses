@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Author: Warner Carpenter
+// Purpose: This class is the model that defines the department resource and contains all the properties of departments
+
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BangazonAPI.Models
