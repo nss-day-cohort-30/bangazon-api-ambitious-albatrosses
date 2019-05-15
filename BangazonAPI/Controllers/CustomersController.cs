@@ -11,10 +11,12 @@ using BangazonAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Cors;
 
 namespace BangazonAPI.Controllers
 {
     [Route("[controller]")]
+    [EnableCors ("BangazonOnly")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
