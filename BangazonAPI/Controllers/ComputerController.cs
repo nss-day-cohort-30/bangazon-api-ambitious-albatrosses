@@ -47,9 +47,9 @@ namespace BangazonAPI.Controllers
                     while (reader.Read())
                     {
 
-                    bool IsDecomDateNull = reader.IsDBNull(reader.GetOrdinal("DecomissionDate"));
+                        bool IsDecomDateNull = reader.IsDBNull(reader.GetOrdinal("DecomissionDate"));
 
-                    if (IsDecomDateNull == false)
+                        if (IsDecomDateNull == false)
                         {
                             Computer computer = new Computer
                             {
@@ -61,7 +61,7 @@ namespace BangazonAPI.Controllers
                             };
                             computers.Add(computer);
                         }
-                     else if (IsDecomDateNull == true)         
+                        else if (IsDecomDateNull == true)
                         {
                             Computer computer = new Computer
                             {
@@ -82,7 +82,7 @@ namespace BangazonAPI.Controllers
 
         // GET/values/5
         [HttpGet("{id}", Name = "GetComputer")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -90,7 +90,7 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT PurchaseDate, DecomissionDate, Make, Manufacturer
+                    SELECT Id, PurchaseDate, Make, Manufacturer, DecomissionDate
                     FROM Computer
                     WHERE Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
@@ -99,14 +99,30 @@ namespace BangazonAPI.Controllers
                     Computer computer = null;
                     if (reader.Read())
                     {
-                        computer = new Computer
+                        bool IsDecomDateNull = reader.IsDBNull(reader.GetOrdinal("DecomissionDate"));
+
+                        if (IsDecomDateNull == false)
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
-                            DecomissionDate = reader.GetDateTime(reader.GetOrdinal("DecomissionDate")),
-                            Make = reader.GetString(reader.GetOrdinal("Make")),
-                            Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer")),
-                        };
+                            computer = new Computer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
+                                DecomissionDate = reader.GetDateTime(reader.GetOrdinal("DecomissionDate")),
+                                Make = reader.GetString(reader.GetOrdinal("Make")),
+                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
+                            };
+                        }
+                        else if (IsDecomDateNull == true)
+                        {
+                            computer = new Computer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
+                                Make = reader.GetString(reader.GetOrdinal("Make")),
+                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
+                            };
+
+                        }
                     }
 
                     reader.Close();

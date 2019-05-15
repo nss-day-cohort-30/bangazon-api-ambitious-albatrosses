@@ -229,7 +229,7 @@ VALUES ('Diversity', '20140612 10:26:05 AM', '20140712 10:26:06 AM', 30);
 INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
 VALUES ('Salesforce', '20150612 10:26:05 AM', '20150613 9:26:06 AM', 40);
 INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
-VALUES '(Nginx', '20190913 10:26:05 AM', '20191012 11:26:06 AM', 50);
+VALUES ('Nginx', '20190913 10:26:05 AM', '20191012 11:26:06 AM', 50);
 
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
 VALUES (1, 1 );

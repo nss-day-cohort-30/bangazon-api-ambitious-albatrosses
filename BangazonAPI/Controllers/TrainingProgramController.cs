@@ -107,13 +107,9 @@ namespace BangazonAPI.Controllers
             }
         }
 
-
-
-
-
         // GET/values/5
         [HttpGet("{id}", Name = "GetTrainingProgram")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
             using (SqlConnection conn = Connection)
             {
@@ -121,32 +117,57 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    SELECT Name, StartDate, EndDate, MaxAttendees
-                    FROM TrainingProgram
-                    WHERE Id = @id";
+            SELECT tp.Id AS TPId, Name, StartDate, EndDate, MaxAttendees, DepartmentId, IsSupervisor, e.id AS EmployeeId, FirstName, LastName FROM TrainingProgram tp
+              LEFT JOIN EmployeeTraining et on et.TrainingProgramId = tp.id
+              LEFT JOIN Employee e on et.EmployeeId = e.Id
+                    WHERE tp.Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    TrainingProgram trainingProgram = null;
+                    Dictionary<int, TrainingProgram> programHash = new Dictionary<int, TrainingProgram>();
 
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        trainingProgram = new TrainingProgram
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                            StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
-                            EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
-                            MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),
-                        };
-                    }
+                        int programId = reader.GetInt32(reader.GetOrdinal("TPId"));
+                        bool IsEmployeeIdNull = reader.IsDBNull(reader.GetOrdinal("EmployeeId"));
 
+                        if (!programHash.ContainsKey(programId))
+                        {
+                            programHash[programId] = new TrainingProgram
+
+                            {
+
+                                Id = reader.GetInt32(reader.GetOrdinal("TPId")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                                EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
+                                MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees"))
+
+                            };
+                        }
+                        if (IsEmployeeIdNull == false)
+                        {
+                            programHash[programId].EmployeesAssigned.Add(new Employee
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("EmployeeId")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
+                                DepartmentId = reader.GetInt32(reader.GetOrdinal("DepartmentId"))
+                            });
+
+                        }
+
+                    }
+                    List<TrainingProgram> trainingPrograms = programHash.Values.ToList();
                     reader.Close();
 
-                    return Ok(trainingProgram);
+                    return Ok(trainingPrograms);
                 }
             }
         }
+
+
 
         //PUT api/values/5
         [HttpPut("{id}")]
