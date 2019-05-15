@@ -44,10 +44,10 @@ namespace BangazonAPI.Controllers
                 {
                     cmd.CommandText = @"SELECT o.Id, o.CustomerId, o.PaymentTypeId,
                                             p.Id ProductId, p.Title, p.[Description], p.Price, p.Quantity, p.ProductTypeId, p.CustomerId
-                                        FROM OrderProduct op
-                                        JOIN[Order] o ON o.Id = op.OrderId
-                                        JOIN Product p ON p.Id = op.ProductId
-                                        ";
+                                        FROM [Order] o 
+                                        LEFT JOIN OrderProduct op ON o.Id = op.OrderId
+                                        LEFT JOIN Product p ON p.Id = op.ProductId;
+                                        ;";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     List<Order> orders = new List<Order>();
@@ -118,9 +118,9 @@ namespace BangazonAPI.Controllers
                 {
                     cmd.CommandText = @"SELECT o.Id, o.CustomerId, o.PaymentTypeId,
                                             p.Id ProductId, p.Title, p.[Description], p.Price, p.Quantity, p.ProductTypeId, p.CustomerId
-                                        FROM OrderProduct op
-                                        JOIN [Order] o ON o.Id = op.OrderId
-                                        JOIN Product p ON p.Id = op.ProductId
+                                        FROM [Order] o 
+                                        LEFT JOIN OrderProduct op ON o.Id = op.OrderId
+                                        LEFT JOIN Product p ON p.Id = op.ProductId
                                         WHERE o.Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
