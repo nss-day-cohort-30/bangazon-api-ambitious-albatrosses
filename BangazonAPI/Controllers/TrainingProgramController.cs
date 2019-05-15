@@ -32,23 +32,27 @@ namespace BangazonAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string completed)
+        public async Task<IActionResult> Get(bool? completed)
         {
             string sql
-            = @"select [Name], tp.id AS TPId, e.id AS EmployeeId, StartDate, EndDate,                MaxAttendees, DepartmentId, IsSuperVisor, FirstName, LastName from Employee e
-                                LEFT JOIN EmployeeTraining et on et.EmployeeId = e.Id
-                                LEFT JOIN TrainingProgram tp on et.TrainingProgramId = tp.Id";
+            = @"select [Name], tp.id AS TPId, e.id AS EmployeeId, StartDate, EndDate, MaxAttendees,
+                                DepartmentId, IsSuperVisor, FirstName, LastName from Employee e
+                                JOIN EmployeeTraining et on et.EmployeeId = e.Id
+                                JOIN TrainingProgram tp on et.TrainingProgramId = tp.Id";
 
             DateTime currentDateTime = DateTime.UtcNow;
 
-            if (completed == "false")
+            if (completed == false)
             {
                 sql = $"{sql} WHERE tp.StartDate >= @currentDateTime";
             }
-            else if (completed =="true")
+            else if (completed == true)
             {
                 sql = $"{sql} WHERE tp.StartDate < @currentDateTime";
             }
+            
+                
+            
 
             using (SqlConnection conn = Connection)
             {

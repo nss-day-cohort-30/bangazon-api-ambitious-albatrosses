@@ -29,7 +29,6 @@ namespace BangazonAPI.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-
         // GET /values
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -38,25 +37,43 @@ namespace BangazonAPI.Controllers
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
+
                 {
                     cmd.CommandText = "SELECT Id, PurchaseDate, DecomissionDate, Make, Manufacturer FROM Computer";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
+
                     List<Computer> computers = new List<Computer>();
+
                     while (reader.Read())
                     {
-                        Computer computer = new Computer
+
+                    bool IsDecomDateNull = reader.IsDBNull(reader.GetOrdinal("DecomissionDate"));
+
+                    if (IsDecomDateNull == false)
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
-                            DecomissionDate = reader.GetDateTime(reader.GetOrdinal("DecomissionDate")),
-                            Make = reader.GetString(reader.GetOrdinal("Make")),
-                            Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer")),
-                        };
-
-                        computers.Add(computer);
+                            Computer computer = new Computer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
+                                Make = reader.GetString(reader.GetOrdinal("Make")),
+                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer")),
+                                DecomissionDate = reader.GetDateTime(reader.GetOrdinal("DecomissionDate"))
+                            };
+                            computers.Add(computer);
+                        }
+                     else if (IsDecomDateNull == true)         
+                        {
+                            Computer computer = new Computer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                PurchaseDate = reader.GetDateTime(reader.GetOrdinal("PurchaseDate")),
+                                Make = reader.GetString(reader.GetOrdinal("Make")),
+                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer")),
+                            };
+                            computers.Add(computer);
+                        }
                     }
-
                     reader.Close();
 
                     return Ok(computers);

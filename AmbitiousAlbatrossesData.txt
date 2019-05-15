@@ -221,3 +221,21 @@ INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
 VALUES (3, 3, '20140618 8:34:09 AM', NULL);
 INSERT INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
 VALUES (4, 4, '20150618 7:34:09 AM', NULL);
+
+INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
+VALUES ('SQL', '20130612 10:26:05 AM', '20130612 8:26:06 AM', 30);
+INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
+VALUES ('Diversity', '20140612 10:26:05 AM', '20140712 10:26:06 AM', 30);
+INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
+VALUES ('Salesforce', '20150612 10:26:05 AM', '20150613 9:26:06 AM', 40);
+INSERT INTO TrainingProgram (Name, StartDate, EndDate, MaxAttendees)
+VALUES '(Nginx', '20190913 10:26:05 AM', '20191012 11:26:06 AM', 50);
+
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
+VALUES (1, 1 );
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
+VALUES (2, 2 );
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
+VALUES (1, 2 );
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId )
+VALUES (2, 1 );
