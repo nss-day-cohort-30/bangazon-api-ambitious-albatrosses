@@ -113,7 +113,6 @@ namespace TestBangazonAPI
         [Fact]
         public async Task Test_Modify_PaymentType()
         {
-            // New last name to change to and test
             string newAcctName = "New Acct Name For Test";
             int newAcctNum = 12345;
 

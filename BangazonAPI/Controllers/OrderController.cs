@@ -33,7 +33,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values 
+        // Purpose: get all orders in the database, including product info for every product on the orders
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -107,7 +107,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // Purpose: get one specficic product in the database using its ID
+        // Purpose: get one specficic order in the database using its ID, including product info for every product on the order
         [HttpGet("{id}", Name = "GetOrder")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {

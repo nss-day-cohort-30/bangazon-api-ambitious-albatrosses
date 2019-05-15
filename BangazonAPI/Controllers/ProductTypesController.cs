@@ -31,6 +31,8 @@ namespace BangazonAPI.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
+
+        // Purpose: get all product types in the database
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -60,6 +62,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: get one specficic product type in the database using its ID
         [HttpGet("{id}", Name = "GetProductType")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -100,6 +103,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: add a new product type to the database
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ProductType productType)
         {
@@ -120,6 +124,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: edit a product type in the database using its ID to ensure the proper product type is changed
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] ProductType productType)
         {
@@ -158,6 +163,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: delete a product type from the database using its ID to ensure the proper product type is removed
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -193,6 +199,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: check if a product type exists in the database, using its ID
         private bool ProductTypeExists(int id)
         {
             using (SqlConnection conn = Connection)

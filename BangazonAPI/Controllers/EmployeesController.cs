@@ -33,7 +33,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values
+        // Purpose: get all employees in the database, along with data for their department and computer
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -130,6 +130,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: get one specficic employee in the database using its ID, along with data for their department and computer
         [HttpGet("{id}", Name = "GetEmployee")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -227,7 +228,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // POST api/values
+        // Purpose: add a new employee to the database
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Employee employee)
         {
@@ -254,7 +255,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // PUT api/values/5
+        // Purpose: edit an employee in the database using its ID to ensure the proper employee is changed
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Employee employee)
         {
@@ -299,6 +300,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: delete an employee from the database using its ID to ensure the proper employee is removed
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -335,6 +337,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: check if an employee exists in the database, using its ID
         private bool EmployeeExists(int id)
         {
             using (SqlConnection conn = Connection)
