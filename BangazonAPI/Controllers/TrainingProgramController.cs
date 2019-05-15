@@ -171,7 +171,7 @@ namespace BangazonAPI.Controllers
 
         //PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] TrainingProgram trainingProgram)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] TrainingProgram trainingProgram)
         {
             try
             {
@@ -182,13 +182,12 @@ namespace BangazonAPI.Controllers
                     {
                         cmd.CommandText = @"
                             UPDATE TrainingProgram
-                            SET Name = @Name
-                            SET StartDate = @StartDate
-                            SET EndDate = @EndDate
-                            SET MaxAttendees = @MaxAttendees
-                            WHERE Id = @id
-                        ";
-                        cmd.Parameters.Add(new SqlParameter("@id", trainingProgram.Id));
+                            SET [Name] = @Name,
+                            StartDate = @StartDate,
+                            EndDate = @EndDate,
+                            MaxAttendees = @MaxAttendees
+                            WHERE Id = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
                         cmd.Parameters.Add(new SqlParameter("@Name", trainingProgram.Name));
                         cmd.Parameters.Add(new SqlParameter("@StartDate", trainingProgram.StartDate));
                         cmd.Parameters.Add(new SqlParameter("@EndDate", trainingProgram.EndDate));
@@ -272,7 +271,8 @@ namespace BangazonAPI.Controllers
                     conn.Open();
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = @"DELETE FROM TrainingProgram WHERE Id = @id";
+                        cmd.CommandText = @"  DELETE FROM EmployeeTraining WHERE TrainingProgramId = @id
+                                              DELETE FROM TrainingProgram WHERE Id = @id";
                         cmd.Parameters.Add(new SqlParameter("@id", id));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();

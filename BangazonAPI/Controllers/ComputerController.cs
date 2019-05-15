@@ -134,7 +134,7 @@ namespace BangazonAPI.Controllers
 
         //PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Computer computer)
+        public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Computer computer)
         {
             try
             {
@@ -144,14 +144,18 @@ namespace BangazonAPI.Controllers
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
-                            UPDATE Customer
-                            SET FirstName = @firstName
-                            -- Set the remaining columns here
+                            UPDATE Computer
+                            Set PurchaseDate = @PurchaseDate,
+                            DecomissionDate = @DecomissionDate, 
+                            Make = @Make, 
+                            Manufacturer = @Manufacturer
                             WHERE Id = @id
                         ";
-                        cmd.Parameters.Add(new SqlParameter("@id", computer.Id));
-                        cmd.Parameters.Add(new SqlParameter("@firstName", computer.PurchaseDate));
-                        cmd.Parameters.Add(new SqlParameter("@firstName", computer.DecomissionDate));
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        cmd.Parameters.Add(new SqlParameter("@PurchaseDate", computer.PurchaseDate));
+                        cmd.Parameters.Add(new SqlParameter("@DecomissionDate", computer.DecomissionDate));
+                        cmd.Parameters.Add(new SqlParameter("@Make", computer.Make));
+                        cmd.Parameters.Add(new SqlParameter("@Manufacturer", computer.Manufacturer));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
 
@@ -232,7 +236,9 @@ namespace BangazonAPI.Controllers
                     conn.Open();
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = @"DELETE FROM Computer WHERE Id = @id";
+                        cmd.CommandText = @"
+                        DELETE FROM ComputerEmployee WHERE ComputerId = @id
+                        DELETE FROM Computer WHERE Id = @id";
                         cmd.Parameters.Add(new SqlParameter("@id", id));
 
                         int rowsAffected = await cmd.ExecuteNonQueryAsync();
