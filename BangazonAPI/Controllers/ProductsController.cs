@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 using BangazonAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
 
 namespace BangazonAPI.Controllers
 {
     [Route("[controller]")]
+    [EnableCors("BangazonOnly")]
     [ApiController]
     public class ProductsController : Controller
     {
