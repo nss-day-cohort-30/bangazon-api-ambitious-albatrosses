@@ -42,7 +42,6 @@ namespace BangazonAPI.Controllers
                     cmd.CommandText = "SELECT Id, PurchaseDate, DecomissionDate, Make, Manufacturer FROM Computer";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-
                     List<Computer> computers = new List<Computer>();
 
                     while (reader.Read())
