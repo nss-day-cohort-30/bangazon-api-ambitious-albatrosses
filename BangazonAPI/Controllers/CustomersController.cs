@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Connor Bailey
+// Purpose: This class contains methods for CRUD functionality for the Customers resource
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -32,6 +35,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: get all customers in the database. User can specify that they only want to see customers without an order.
         [HttpGet]
         public async Task<IActionResult> Get(string refine)
         {
@@ -93,8 +97,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-
-        // GET api/values/# 
+        // Purpose: get one specficic customer in the database using its ID
         [HttpGet("{id}", Name = "GetCustomer")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -129,7 +132,7 @@ namespace BangazonAPI.Controllers
         }
 
 
-        // POST api/values 
+        // Purpose: add a new customer to the database
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Customer customer)
         {
@@ -154,7 +157,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // PUT api/values/# 
+        // Purpose: edit a customer in the database using its ID to ensure the proper customer is changed
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Customer customer)
         {
@@ -199,7 +202,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // DELETE api/values/# 
+        // Purpose: delete a customer from the database using its ID to ensure the proper customer is removed
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -236,6 +239,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: check if a customer exists in the database, using its ID
         private bool CustomerExists(int id)
         {
             using (SqlConnection conn = Connection)
