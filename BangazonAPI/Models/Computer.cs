@@ -1,4 +1,4 @@
-﻿// Author: Stephen Cook
+﻿// Author: Stephen Clark
 // Purpose: This class is the model that defines the computer resource and contains all the properties of computers
 
 using System;
