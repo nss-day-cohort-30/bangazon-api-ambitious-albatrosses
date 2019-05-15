@@ -1,5 +1,7 @@
-﻿// Author: Kirren Covey
-// Purpose: This class contains methods for CRUD functionality for the Product resource
+﻿/// <summary>
+/// Author: Kirren Covey
+/// Purpose: This class contains methods for CRUD functionality for the Product resource
+/// </summary>
 
 using System;
 using System.Collections.Generic;
@@ -31,8 +33,12 @@ namespace BangazonAPI.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-
-        // Purpose: get all products in the database
+        /// <summary>
+        /// Purpose: get all products in the database
+        /// </summary>
+        /// <returns>
+        /// All products
+        /// </returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -72,7 +78,15 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // Purpose: get one specficic product in the database using its ID
+        /// <summary>
+        /// Purpose: get one specific product in the database using its ID
+        /// </summary>
+        /// <param name="id">
+        /// Id of the specific product to be retrieved
+        /// </param>
+        /// <returns>
+        /// One product
+        /// </returns>
         [HttpGet("{id}", Name = "GetProduct")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -121,7 +135,12 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // Purpose: add a new product to the database
+        /// <summary>
+        /// Purpose: add a new product to the database
+        /// </summary>
+        /// <returns>
+        /// Newly created product
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Product product)
         {
@@ -155,7 +174,12 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // Purpose: edit a product in the database using its ID to ensure the proper product is changed
+        /// <summary>
+        /// Purpose: edit a product in the database using its ID to ensure the proper product is changed
+        /// </summary>
+        /// /// <param name="id">
+        /// Id of the specific product to be updated
+        /// </param>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Product product)
         {
@@ -205,7 +229,12 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // Purpose: delete a product from the database using its ID to ensure the proper product is removed
+        /// <summary>
+        /// Purpose: delete a product from the database using its ID to ensure the proper product is removed
+        /// </summary>
+        /// /// <param name="id">
+        /// Id of the specific product to be deleted
+        /// </param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -241,7 +270,9 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // Purpose: check if a product exists in the database, using its ID
+        /// <summary>
+        /// Purpose: check if a product exists in the database, using its ID
+        /// </summary>
         private bool ProductExists(int id)
         {
             using (SqlConnection conn = Connection)
