@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Author: Connor Bailey
+// Purpose: This class is the model that defines the order resource and contains all the properties of orders
+
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BangazonAPI.Models

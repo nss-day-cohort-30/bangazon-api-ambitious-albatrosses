@@ -1,3 +1,6 @@
+// Author: Connor Bailey
+// Purpose: This class is the model that defines the customer resource and contains all the properties of customers
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

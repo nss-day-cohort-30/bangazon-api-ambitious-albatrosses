@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Author: Warner Carpenter
+// Purpose: This class contains methods for CRUD functionality for the Department resource
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -30,7 +33,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET api/values
+        // Purpose: get all departments in the database. User can specify that they want departments returned to include employee data. They can also specify that they want to see only departments with a budget greater than a number of their choice.
         [HttpGet]
         public async Task<IActionResult> Get(string _include, int? _gt)
         {
@@ -150,6 +153,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: get one specficic department in the database using its ID
         [HttpGet("{id}", Name = "GetDepartment")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -179,7 +183,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // POST api/values
+        // Purpose: add a new department to the database
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Department department)
         {
@@ -201,7 +205,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // PUT api/values/5
+        // Purpose: edit a department in the database using its ID to ensure the proper department is changed
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] Department department)
         {
@@ -242,6 +246,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: delete a department from the database using its ID to ensure the proper department is removed
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -278,6 +283,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        // Purpose: check if a department exists in the database, using its ID
         private bool DepartmentExists(int id)
         {
             using (SqlConnection conn = Connection)
