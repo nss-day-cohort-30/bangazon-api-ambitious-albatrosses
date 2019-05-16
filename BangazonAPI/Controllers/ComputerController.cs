@@ -1,4 +1,10 @@
-﻿using System;
+﻿/// <summary>
+/// Author: Stephen Clark
+/// Purpose: This class contains methods for CRUD functionality for the Training Program resource
+/// </summary>
+
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -29,7 +35,16 @@ namespace BangazonAPI.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-        // GET /values
+
+        /// <summary>
+        /// Purpose: get all computers in the database, with nested employees
+        /// </summary>
+        /// <returns>
+        /// All computers
+        /// </returns>
+        /// 
+        // GET /computers
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -79,8 +94,17 @@ namespace BangazonAPI.Controllers
                 }
             }
         }
+        /// <summary>
+        /// Purpose: get one specific computer in the database using its ID
+        /// </summary>
+        /// <param name="id">
+        /// Id of the specific computer to be retrieved
+        /// </param>
+        /// <returns>
+        /// One product
+        /// </returns>
 
-        // GET/values/5
+        // GET/computers/5
         [HttpGet("{id}", Name = "GetComputer")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -131,6 +155,13 @@ namespace BangazonAPI.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Purpose: edit a computer in the database using its ID to ensure the proper product type is changed
+        /// </summary>
+        /// /// <param name="id">
+        /// Id of the specific computer to be updated
+        /// </param>
 
         //PUT api/values/5
         [HttpPut("{id}")]
@@ -207,7 +238,14 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // POST /values
+        /// <summary>
+        /// Purpose: add a new product to the database
+        /// </summary>
+        /// <returns>
+        /// Newly created product
+        /// </returns>
+
+        // POST /computers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Computer computer)
         {
@@ -242,6 +280,14 @@ namespace BangazonAPI.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Purpose: delete a computer from the database using its ID 
+        /// </summary>
+        /// /// <param name="id">
+        /// Id of the specific computer to be deleted
+        /// </param>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
