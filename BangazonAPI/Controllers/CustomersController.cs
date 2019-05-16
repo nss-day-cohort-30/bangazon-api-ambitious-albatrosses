@@ -37,14 +37,14 @@ namespace BangazonAPI.Controllers
 
         // Purpose: get all customers in the database. User can specify that they only want to see customers without an order.
         [HttpGet]
-        public async Task<IActionResult> Get(string refine)
+        public async Task<IActionResult> Get(string _include)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    if (refine == "noOrders")
+                    if (_include == "noOrders")
                     {
                         cmd.CommandText = "SELECT c.Id, c.FirstName, c.LastName " +
                             "FROM Customer c " +
@@ -66,6 +66,122 @@ namespace BangazonAPI.Controllers
                             customers.Add(customer);
                         }
 
+                        reader.Close();
+
+                        return Ok(customers);
+                    }
+                    else if (_include == "products")
+                    {
+                        cmd.CommandText = "SELECT c.Id, c.FirstName, c.LastName, p.Id ProductId, p.ProductTypeId, p.Price, p.Title, p.Description, p.Quantity " +
+                            "FROM Customer c " +
+                            "LEFT JOIN Product p " +
+                            "ON c.Id = p.CustomerId";
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
+                        {
+                            if (customers.Count < reader.GetInt32(reader.GetOrdinal("Id")))
+                            {
+                                Customer customer = new Customer
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                    LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                                };
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                                {
+                                    Product product = new Product
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                        Title = reader.GetString(reader.GetOrdinal("Title")),
+                                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                        ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                    };
+
+                                    customer.Products.Add(product);
+                                }
+
+                                customers.Add(customer);
+                            }
+                            else
+                            {
+                                if(!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                                {
+                                    Product product = new Product
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                        Title = reader.GetString(reader.GetOrdinal("Title")),
+                                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                        ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                    };
+
+                                    customers[reader.GetInt32(reader.GetOrdinal("Id")) - 1].Products.Add(product);
+                                }
+                            }
+                        }
+                        reader.Close();
+
+                        return Ok(customers);
+                    }
+                    else if (_include == "payments")
+                    {
+                        cmd.CommandText = @"SELECT c.Id, c.FirstName, c.LastName, pt.Id PaymentTypeId, pt.AcctNumber, pt.Name
+                            FROM Customer c
+                            LEFT JOIN PaymentType pt
+                            ON c.Id = pt.CustomerId";
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
+                        {
+                            if (customers.Count < reader.GetInt32(reader.GetOrdinal("Id")))
+                            {
+                                Customer customer = new Customer
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                    LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                                };
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("PaymentTypeId")))
+                                {
+                                    PaymentType paymentType = new PaymentType
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("PaymentTypeId")),
+                                        AccountNumber = reader.GetInt32(reader.GetOrdinal("AcctNumber")),
+                                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    };
+
+                                    customer.Payments.Add(paymentType);
+                                }
+
+                                customers.Add(customer);
+                            }
+                            else
+                            {
+                                if (!reader.IsDBNull(reader.GetOrdinal("PaymentTypeId")))
+                                {
+                                    PaymentType paymentType = new PaymentType
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("PaymentTypeId")),
+                                        AccountNumber = reader.GetInt32(reader.GetOrdinal("AcctNumber")),
+                                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    };
+
+                                    customers[reader.GetInt32(reader.GetOrdinal("Id")) - 1].Payments.Add(paymentType);
+                                }
+                            }
+                        }
                         reader.Close();
 
                         return Ok(customers);
@@ -99,34 +215,162 @@ namespace BangazonAPI.Controllers
 
         // Purpose: get one specficic customer in the database using its ID
         [HttpGet("{id}", Name = "GetCustomer")]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id, string _include)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT
-                            Id, FirstName, LastName
+                    if (_include == "products")
+                    {
+                        cmd.CommandText = @"SELECT c.Id, c.FirstName, c.LastName, p.Id ProductId, p.ProductTypeId, p.Price, p.Title, p.Description, p.Quantity
+                            FROM Customer c 
+                            LEFT JOIN Product p 
+                            ON c.Id = p.CustomerId
+                            WHERE c.Id = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
+                        {
+                            if (customers.Count < reader.GetInt32(reader.GetOrdinal("Id")))
+                            {
+                                Customer customer = new Customer
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                    LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                                };
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                                {
+                                    Product product = new Product
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                        Title = reader.GetString(reader.GetOrdinal("Title")),
+                                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                        ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                    };
+
+                                    customer.Products.Add(product);
+                                }
+
+                                customers.Add(customer);
+                            }
+                            else
+                            {
+                                if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                                {
+                                    Product product = new Product
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                        Title = reader.GetString(reader.GetOrdinal("Title")),
+                                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                        ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                    };
+
+                                    customers[reader.GetInt32(reader.GetOrdinal("Id")) - 1].Products.Add(product);
+                                }
+                            }
+                        }
+                        reader.Close();
+
+                        return Ok(customers);
+                    }
+                    else if (_include == "payments")
+                    {
+                        cmd.CommandText = @"SELECT c.Id, c.FirstName, c.LastName, pt.Id PaymentTypeId, pt.AcctNumber, pt.Name
+                            FROM Customer c
+                            LEFT JOIN PaymentType pt
+                            ON c.Id = pt.CustomerId
+                            WHERE c.Id = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
+                        {
+                            if (customers.Count < reader.GetInt32(reader.GetOrdinal("Id")))
+                            {
+                                Customer customer = new Customer
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                    LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                                };
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("PaymentTypeId")))
+                                {
+                                    PaymentType paymentType = new PaymentType
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("PaymentTypeId")),
+                                        AccountNumber = reader.GetInt32(reader.GetOrdinal("AcctNumber")),
+                                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    };
+
+                                    customer.Payments.Add(paymentType);
+                                }
+
+                                customers.Add(customer);
+                            }
+                            else
+                            {
+                                if (!reader.IsDBNull(reader.GetOrdinal("PaymentTypeId")))
+                                {
+                                    PaymentType paymentType = new PaymentType
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("PaymentTypeId")),
+                                        AccountNumber = reader.GetInt32(reader.GetOrdinal("AcctNumber")),
+                                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    };
+
+                                    customers[reader.GetInt32(reader.GetOrdinal("Id")) - 1].Payments.Add(paymentType);
+                                }
+                            }
+                        }
+                        reader.Close();
+
+                        return Ok(customers);
+                    }
+                    else if (CustomerExists(id))
+                    {
+                        cmd.CommandText = @"SELECT Id, FirstName, LastName 
                             FROM Customer
                             WHERE Id = @id";
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    Customer customer = null;
-                    if (reader.Read())
-                    {
-                        customer = new Customer
+                        List<Customer> customers = new List<Customer>();
+                        while (reader.Read())
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            LastName = reader.GetString(reader.GetOrdinal("LastName"))
-                        };
+                            Customer customer = new Customer
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                            };
+
+                            customers.Add(customer);
+                        }
+
+                        reader.Close();
+
+                        return Ok(customers);
                     }
-
-                    reader.Close();
-
-                    return Ok(customer);
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
             }
         }
