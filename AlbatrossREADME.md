@@ -60,7 +60,7 @@ If you don't have Node installed, visit the [Node.js](https://www.nodejs.org) si
 
 1. In the terminal, navigate to BangazonAPIFrontEnd/bangazon-api-front-end
 1. Run `npm install`
-1. Run `npm-start`
+1. Run `npm start`
 
 ## Use the application
 
