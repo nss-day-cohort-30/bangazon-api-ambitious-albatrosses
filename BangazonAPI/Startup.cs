@@ -20,6 +20,8 @@ namespace BangazonAPI
             Configuration = configuration;
         }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -31,12 +33,11 @@ namespace BangazonAPI
                 options.AddPolicy("BangazonOnly",
                 builder =>
                 {
-                    builder.WithOrigins("http://www.bangazon.com:8080").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("http://www.bangazon.com:8080", "http://www.bangazon.com:3000").AllowAnyHeader().AllowAnyMethod();
                 });
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

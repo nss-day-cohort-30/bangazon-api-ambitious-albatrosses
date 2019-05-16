@@ -1,0 +1,19 @@
+.header {
+    text-align: center;
+    margin-top: 5vh;
+    padding: 1vh;
+    text-shadow: 3px 4px 19px rgba(0, 0, 0, 0.2);
+}
+
+.welcomeToText {
+    font-size: 1.5em;
+}
+
+.bangazonText {
+    font-size: 3.5em;
+    Font-Family: 'Ubuntu', Sans-Serif;
+}
+
+.apiText {
+    font-size: 2em;
+}
