@@ -72,7 +72,7 @@ namespace BangazonAPI.Controllers
         }
 
         /// <summary>
-        /// Purpose: get one specficic product type in the database using its ID
+        /// Purpose: get one specific product type in the database using its ID
         /// </summary>
         /// <param name="id">
         /// Id of the specific product type to be retrieved
@@ -80,6 +80,7 @@ namespace BangazonAPI.Controllers
         /// <returns>
         /// One product
         /// </returns>
+        
         [HttpGet("{id}", Name = "GetProductType")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {

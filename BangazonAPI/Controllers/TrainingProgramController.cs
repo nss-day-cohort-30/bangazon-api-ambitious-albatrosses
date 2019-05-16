@@ -1,4 +1,10 @@
-﻿using System;
+﻿/// <summary>
+/// Author: Stephen Clark
+/// Purpose: This class contains methods for CRUD functionality for the Trainng Program resource
+/// </summary>
+
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -107,7 +113,7 @@ namespace BangazonAPI.Controllers
             }
         }
 
-        // GET/values/5
+        // GET/TrainingPrograms/4
         [HttpGet("{id}", Name = "GetTrainingProgram")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
@@ -167,9 +173,14 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Purpose: edit a training program in the database using its ID 
+        /// </summary>
+        /// /// <param name="id">
+        /// Id of the specific program to be updated
+        /// </param>        
 
-
-        //PUT api/values/5
+        //PUT api/TrainngPrograms/4
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] TrainingProgram trainingProgram)
         {
@@ -236,6 +247,13 @@ namespace BangazonAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Purpose: add a new product type to the database
+        /// </summary>
+        /// <returns>
+        /// Newly created product type
+        /// </returns>
+
         // POST /values
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] TrainingProgram trainingProgram)
@@ -261,6 +279,14 @@ namespace BangazonAPI.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Purpose: delete a training program from the database using its ID 
+        /// </summary>
+        /// /// <param name="id">
+        /// Id of the specific program to be deleted
+        /// </param>
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
