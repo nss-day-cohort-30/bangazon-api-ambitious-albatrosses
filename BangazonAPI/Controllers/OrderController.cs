@@ -154,7 +154,7 @@ namespace BangazonAPI.Controllers
                                     order.Products.Add(product);
                                 }
 
-                                if(!reader.IsDBNull(reader.GetOrdinal("CustomerId")))
+                                if (!reader.IsDBNull(reader.GetOrdinal("CustomerId")))
                                 {
                                     order.customer = new Customer
                                     {
@@ -199,56 +199,146 @@ namespace BangazonAPI.Controllers
 
         // Purpose: get one specficic order in the database using its ID, including product info for every product on the order
         [HttpGet("{id}", Name = "GetOrder")]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id, string _include)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT o.Id, o.CustomerId, o.PaymentTypeId,
+                    if (_include == null)
+                    {
+                        cmd.CommandText = @"SELECT o.Id, o.CustomerId, o.PaymentTypeId,
                                             p.Id ProductId, p.Title, p.[Description], p.Price, p.Quantity, p.ProductTypeId, p.CustomerId
                                         FROM [Order] o 
                                         LEFT JOIN OrderProduct op ON o.Id = op.OrderId
                                         LEFT JOIN Product p ON p.Id = op.ProductId
                                         WHERE o.Id = @id";
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    Order order = null;
-                    while (reader.Read())
-                    {
-                        if (order == null)
+                        Order order = null;
+                        while (reader.Read())
                         {
-                            order = new Order
+                            if (order == null)
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
-                                PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
-                            };
+                                order = new Order
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                    PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
+                                };
+                            }
+
+
+                            if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                            {
+                                Product product = new Product
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                    Title = reader.GetString(reader.GetOrdinal("Title")),
+                                    Description = reader.GetString(reader.GetOrdinal("Description")),
+                                    Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                    Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                    CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                    ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                };
+
+                                order.Products.Add(product);
+                            }
                         }
 
+                        reader.Close();
 
-                        if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
-                        {
-                            Product product = new Product
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
-                                Title = reader.GetString(reader.GetOrdinal("Title")),
-                                Description = reader.GetString(reader.GetOrdinal("Description")),
-                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
-                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                                CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
-                                ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
-                            };
-
-                            order.Products.Add(product);
-                        }
+                        return Ok(order);
                     }
+                    else if( _include == "customer")
+                    {
+                        cmd.CommandText = @"
+                        SELECT o.Id, o.CustomerId, o.PaymentTypeId, 
+                        pr.Id ProductId, pr.Title, pr.[Description], pr.Price, pr.Quantity, pr.ProductTypeId, pr.CustomerId ProdCustId,
+                        c.FirstName, c.LastName
+                        FROM [Order] o
+                        LEFT JOIN [OrderProduct] op 
+                        ON o.id=op.OrderId
+                        INNER JOIN Product pr 
+                        ON op.ProductId=pr.Id
+                        INNER JOIN ProductType pt 
+                        ON pr.ProductTypeId=pt.Id 
+                        INNER JOIN [Customer] c 
+                        ON o.CustomerId=c.Id
+                        WHERE o.Id = @id";
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                        SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-                    reader.Close();
+                        List<Order> orders = new List<Order>();
 
-                    return Ok(order);
+                        while (reader.Read())
+                        {
+                            if (orders.Count < reader.GetInt32(reader.GetOrdinal("Id")))
+                            {
+                                Order order = new Order
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                    PaymentTypeId = reader.GetInt32(reader.GetOrdinal("PaymentTypeId"))
+                                };
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                                {
+                                    Product product = new Product
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                        Title = reader.GetString(reader.GetOrdinal("Title")),
+                                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("prodCustId")),
+                                        ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                    };
+
+                                    order.Products.Add(product);
+                                }
+
+                                if (!reader.IsDBNull(reader.GetOrdinal("CustomerId")))
+                                {
+                                    order.customer = new Customer
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                        LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                                    };
+                                }
+                                orders.Add(order);
+                            }
+                            else
+                            {
+                                if (!reader.IsDBNull(reader.GetOrdinal("ProductId")))
+                                {
+                                    Product product = new Product
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ProductId")),
+                                        Title = reader.GetString(reader.GetOrdinal("Title")),
+                                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                                        Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                        CustomerId = reader.GetInt32(reader.GetOrdinal("CustomerId")),
+                                        ProductTypeId = reader.GetInt32(reader.GetOrdinal("ProductTypeId"))
+                                    };
+
+                                    orders[reader.GetInt32(reader.GetOrdinal("Id")) - 1].Products.Add(product);
+                                }
+                            }
+
+                        }
+                        reader.Close();
+
+                        return Ok(orders);
+                    }
+                    else
+                    {
+                        return StatusCode(418);
+                    }
                 }
             }
         }
