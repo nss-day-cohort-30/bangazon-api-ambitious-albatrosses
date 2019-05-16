@@ -1,4 +1,4 @@
-﻿// Author: Stephen Cook
+﻿// Author: Stephen Clark
 // Purpose: This class is the model that defines the training program resource and contains all the properties of training programs
 
 using System;
@@ -21,7 +21,9 @@ namespace BangazonAPI.Models
         [Required]
         public DateTime EndDate { get; set; }
 
-        public int MaxAtendees { get; set; }
+        public int MaxAttendees { get; set; }
+
+        public List<Employee> EmployeesAssigned { get; set; } = new List<Employee>();
 
     }
 }

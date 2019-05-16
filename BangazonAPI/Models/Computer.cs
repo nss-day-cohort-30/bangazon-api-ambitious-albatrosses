@@ -1,4 +1,4 @@
-﻿// Author: Stephen Cook
+﻿// Author: Stephen Clark
 // Purpose: This class is the model that defines the computer resource and contains all the properties of computers
 
 using System;
@@ -16,7 +16,7 @@ namespace BangazonAPI.Models
         [Required]
         public DateTime PurchaseDate { get; set; }
 
-        public DateTime DecomissionDate { get; set; }
+        public DateTime? DecomissionDate { get; set; }
 
         [Required]
         [StringLength(55)]
