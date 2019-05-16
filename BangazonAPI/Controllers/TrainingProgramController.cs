@@ -123,31 +123,26 @@ namespace BangazonAPI.Controllers
                     WHERE tp.Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                    TrainingProgram trainingProgram = new TrainingProgram();
 
-                    Dictionary<int, TrainingProgram> programHash = new Dictionary<int, TrainingProgram>();
-
-                    while (reader.Read())
+                    if (reader.Read())
                     {
                         int programId = reader.GetInt32(reader.GetOrdinal("TPId"));
                         bool IsEmployeeIdNull = reader.IsDBNull(reader.GetOrdinal("EmployeeId"));
 
-                        if (!programHash.ContainsKey(programId))
+                        if (trainingProgram.Id != programId)
                         {
-                            programHash[programId] = new TrainingProgram
-
                             {
-
-                                Id = reader.GetInt32(reader.GetOrdinal("TPId")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
-                                EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
-                                MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees"))
-
+                                trainingProgram.Id = reader.GetInt32(reader.GetOrdinal("TPId"));
+                                trainingProgram.Name = reader.GetString(reader.GetOrdinal("Name"));
+                                trainingProgram.StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate"));
+                                trainingProgram.EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate"));
+                                trainingProgram.MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees"));
                             };
                         }
                         if (IsEmployeeIdNull == false)
                         {
-                            programHash[programId].EmployeesAssigned.Add(new Employee
+                            trainingProgram.EmployeesAssigned.Add(new Employee
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("EmployeeId")),
                                 FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
@@ -159,10 +154,15 @@ namespace BangazonAPI.Controllers
                         }
 
                     }
-                    List<TrainingProgram> trainingPrograms = programHash.Values.ToList();
-                    reader.Close();
 
-                    return Ok(trainingPrograms);
+                    reader.Close();
+                    if (trainingProgram.Id == id)
+                    {
+                        return Ok(trainingProgram);
+                    } else
+                    {
+                        return new StatusCodeResult(StatusCodes.Status204NoContent);
+                    }
                 }
             }
         }

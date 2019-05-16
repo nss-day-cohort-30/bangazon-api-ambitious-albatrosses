@@ -153,7 +153,14 @@ namespace BangazonAPI.Controllers
                         ";
                         cmd.Parameters.Add(new SqlParameter("@id", id));
                         cmd.Parameters.Add(new SqlParameter("@PurchaseDate", computer.PurchaseDate));
-                        cmd.Parameters.Add(new SqlParameter("@DecomissionDate", computer.DecomissionDate));
+                        if (computer.DecomissionDate == null)
+                        {
+                            cmd.Parameters.Add(new SqlParameter("@DecomissionDate", DBNull.Value));
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add(new SqlParameter("@DecomissionDate", computer.DecomissionDate));
+                        }
                         cmd.Parameters.Add(new SqlParameter("@Make", computer.Make));
                         cmd.Parameters.Add(new SqlParameter("@Manufacturer", computer.Manufacturer));
 
@@ -210,12 +217,21 @@ namespace BangazonAPI.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     // More string interpolation
-                    cmd.CommandText = @"
-                        INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer)
+                    
+                    {
+                        cmd.CommandText = @"
+                        INSERT INTO Computer(PurchaseDate, DecomissionDate, Make, Manufacturer)
                         OUTPUT INSERTED.Id
-                        VALUES (@PurchaseDate, @DecomissionDate, @Make, @Manufacturer)";
+                        VALUES(@PurchaseDate, @DecomissionDate, @Make, @Manufacturer)";
+                    }
                     cmd.Parameters.Add(new SqlParameter("@PurchaseDate", computer.PurchaseDate));
-                    cmd.Parameters.Add(new SqlParameter("@DecomissionDate", computer.DecomissionDate));
+                    if (computer.DecomissionDate == null)
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@DecomissionDate", DBNull.Value));
+                    } else
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@DecomissionDate", computer.DecomissionDate));                            
+                    }
                     cmd.Parameters.Add(new SqlParameter("@Make", computer.Make));
                     cmd.Parameters.Add(new SqlParameter("@Manufacturer", computer.Manufacturer));
 
