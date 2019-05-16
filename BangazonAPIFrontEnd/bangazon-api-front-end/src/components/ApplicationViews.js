@@ -18,6 +18,14 @@ import ProductTypesView from "./productTypes/ProductTypesView"
 import ProductTypesEdit from "./productTypes/ProductTypesEdit"
 import ProductTypesAdd from "./productTypes/ProductTypesAdd"
 import ProductTypeManager from "../modules/ProductTypeManager"
+import PaymentTypesView from "./paymentTypes/PaymentTypesView"
+import PaymentTypesEdit from "./paymentTypes/PaymentTypesEdit"
+import PaymentTypesAdd from "./paymentTypes/PaymentTypesAdd"
+import PaymentTypeManager from "../modules/PaymentTypeManager"
+import ComputersView from "./computers/ComputersView"
+import ComputersEdit from "./computers/ComputersEdit"
+import ComputersAdd from "./computers/ComputersAdd"
+import ComputerManager from "../modules/ComputerManager"
 
 class ApplicationViews extends Component {
 
@@ -25,7 +33,9 @@ class ApplicationViews extends Component {
         employees: [],
         departments: [],
         products: [],
-        productTypes: []
+        productTypes: [],
+        paymentTypes: [],
+        computers: []
     }
 
     updateEmployees = (editedEmployeeObject) => {
@@ -108,13 +118,55 @@ class ApplicationViews extends Component {
             })
     }
 
+    updatePaymentTypes = (editedPaymentTypeObject) => {
+        return PaymentTypeManager.put(editedPaymentTypeObject)
+            .then(() => PaymentTypeManager.getAll())
+            .then(paymentTypes => {
+                this.setState({
+                    paymentTypes: paymentTypes
+                })
+            })
+    }
+
+    addPaymentTypes = (editedPaymentTypeObject) => {
+        return PaymentTypeManager.post(editedPaymentTypeObject)
+            .then(() => PaymentTypeManager.getAll())
+            .then(paymentTypes => {
+                this.setState({
+                    paymentTypes: paymentTypes
+                })
+            })
+    }
+
+    updateComputers = (editedComputerObject) => {
+        return ComputerManager.put(editedComputerObject)
+            .then(() => ComputerManager.getAll())
+            .then(computers => {
+                this.setState({
+                    computers: computers
+                })
+            })
+    }
+
+    addComputers = (editedComputerObject) => {
+        return ComputerManager.post(editedComputerObject)
+            .then(() => ComputerManager.getAll())
+            .then(computers => {
+                this.setState({
+                    computers: computers
+                })
+            })
+    }
+
     componentDidMount() {
 
         const newState = {
             employees: [],
             departments: [],
             products: [],
-            productTypes: []
+            productTypes: [],
+            paymentTypes: [],
+            computers: []
         }
 
         EmployeeManager.getAll()
@@ -125,6 +177,10 @@ class ApplicationViews extends Component {
             .then(products => newState.products = products)
             .then(ProductTypeManager.getAll)
             .then(productTypes => newState.productTypes = productTypes)
+            .then(PaymentTypeManager.getAll)
+            .then(paymentTypes => newState.paymentTypes = paymentTypes)
+            .then(ComputerManager.getAll)
+            .then(computers => newState.computers = computers)
             .then(() => this.setState(newState))
     }
 
@@ -184,6 +240,32 @@ class ApplicationViews extends Component {
                 <Route
                     exact path="/productTypes/add" render={props => {
                         return <ProductTypesAdd {...props} history={this.props.history} addProductTypes={this.addProductTypes} />
+                    }}
+                />
+                <Route exact path="/paymentTypes" render={props => {
+                    return <PaymentTypesView history={this.props.history} paymentTypes={this.state.paymentTypes} />
+                }} />
+                <Route
+                    exact path="/paymentTypes/:paymentTypeId(\d+)/edit" render={props => {
+                        return <PaymentTypesEdit {...props} history={this.props.history} updatePaymentTypes={this.updatePaymentTypes} paymentTypes={this.state.paymentTypes} />
+                    }}
+                />
+                <Route
+                    exact path="/paymentTypes/add" render={props => {
+                        return <PaymentTypesAdd {...props} history={this.props.history} addPaymentTypes={this.addPaymentTypes} />
+                    }}
+                />
+                <Route exact path="/computers" render={props => {
+                    return <ComputersView history={this.props.history} computers={this.state.computers} />
+                }} />
+                <Route
+                    exact path="/computers/:computerId(\d+)/edit" render={props => {
+                        return <ComputersEdit {...props} history={this.props.history} updateComputers={this.updateComputers} computers={this.state.computers} />
+                    }}
+                />
+                <Route
+                    exact path="/computers/add" render={props => {
+                        return <ComputersAdd {...props} history={this.props.history} addComputers={this.addComputers} />
                     }}
                 />
             </React.Fragment>
