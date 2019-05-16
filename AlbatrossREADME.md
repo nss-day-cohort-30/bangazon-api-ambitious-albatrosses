@@ -56,6 +56,12 @@ Tools -> Nuget Package Manager -> Manage Nuget Packages for Solution -> Browse (
 
 ## Run the front-end application
 
+If you don't have Node installed, visit the [Node.js](https://www.nodejs.org) site and install the LTS release.
+
 1. In the terminal, navigate to BangazonAPIFrontEnd/bangazon-api-front-end
 1. Run `npm install`
 1. Run `npm-start`
+
+## Use the application
+
+In the browser, navigate to www.bangazon.com:3000
