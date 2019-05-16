@@ -63,10 +63,11 @@ class EmployeesEdit extends Component {
                 <div className="resourceView">
                     <div className="resourceContainer">
                         <div>
-                            <label htmlFor="FirstName" style={{ marginTop: "4px" }}>First Name:</label><br />
+                            <label htmlFor="FirstName" className="fieldTitle" style={{ marginTop: "4px" }}>First Name:</label><br />
                             <input
                                 type="text"
                                 required
+                                maxLength="55"
                                 spellCheck="false"
                                 autoComplete="off"
                                 className="input"
@@ -77,10 +78,11 @@ class EmployeesEdit extends Component {
                             />
                         </div>
                         <div>
-                            <label htmlFor="LastName">Last Name:</label><br />
+                            <label htmlFor="LastName" className="fieldTitle">Last Name:</label><br />
                             <input
                                 type="text"
                                 required
+                                maxLength="55"
                                 spellCheck="false"
                                 autoComplete="off"
                                 className="input"
@@ -91,7 +93,7 @@ class EmployeesEdit extends Component {
                             />
                         </div>
                         <div>
-                            <label htmlFor="DepartmentID">Department ID:</label><br />
+                            <label htmlFor="DepartmentID" className="fieldTitle">Department ID:</label><br />
                             <input
                                 type="number"
                                 required
@@ -106,7 +108,7 @@ class EmployeesEdit extends Component {
                             />
                         </div>
                         <div>
-                            <label htmlFor="IsSupervisor">Is Supervisor:</label><br />
+                            <label htmlFor="IsSupervisor" className="fieldTitle">Is Supervisor:</label><br />
                             <select id="isSuperVisor" className="dropDown" onChange={this.handleBoolChange} value={this.state.isSuperVisor}>
                                 <option className="dropDownItem" value="true">Yes</option>
                                 <option className="dropDownItem" value="false">No</option>

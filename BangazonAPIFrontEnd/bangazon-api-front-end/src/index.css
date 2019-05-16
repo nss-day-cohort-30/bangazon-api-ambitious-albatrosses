@@ -98,6 +98,10 @@ body {
   border: none !important;
 }
 
+.fieldTitle {
+  font-size: .8em;
+}
+
 .category {
   font-size: 80%;
   margin: 1vh;
@@ -118,7 +122,9 @@ body {
   margin-left: 1vw;
   margin-top: 10px;
   padding-bottom: 10px;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.2)
+  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .resource div {
@@ -134,13 +140,12 @@ body {
   padding-right: 6px;
   padding-top: 2px;
   padding-bottom: 2px;
-  border: solid 1px lightgrey;
   border-radius: 10px;
   display: inline-block;
   width: 24px;
   text-align: center;
   transition: 0.25s;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .editButton:hover {
@@ -151,7 +156,6 @@ body {
 
 .navButton {
   font-size: .6em;
-  border: solid 1px lightgrey;
   display: inline-block;
   padding: 10px;
   padding-bottom: 2.5px;
@@ -160,7 +164,7 @@ body {
   margin-left: 6px;
   margin-right: 6px;
   transition: 0.25s;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
   margin-bottom: 3vh;
 }
 
@@ -171,8 +175,9 @@ body {
 }
 
 .submitButton {
+  font-weight: bold;
   font-size: .6em;
-  background: none;
+  background-color: rgba(255, 255, 255, 0.2);
   border: none !important;
   color: white;
   display: block;
@@ -188,7 +193,8 @@ body {
 
 .submitButton:hover {
   cursor: pointer;
-  color: lightgrey;
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
 .darkerText {
@@ -198,7 +204,7 @@ body {
 }
 
 .input {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
   color: white;
   border: 0;
   display: inline-block;
@@ -206,7 +212,6 @@ body {
   margin-left: 4px;
   margin-right: 4px;
   text-align: center;
-  border: 1px solid white;
   padding: 2px;
   margin-top: 4px;
   width: 115px;
@@ -222,7 +227,7 @@ body {
 }
 
 .input:focus {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.3);
   width: 130px;
 }
 
@@ -235,7 +240,6 @@ body {
   margin-left: 4px;
   margin-right: 4px;
   text-align: center;
-  border: 1px solid white;
   padding: 2px;
   margin-top: 4px;
   width: 60px;

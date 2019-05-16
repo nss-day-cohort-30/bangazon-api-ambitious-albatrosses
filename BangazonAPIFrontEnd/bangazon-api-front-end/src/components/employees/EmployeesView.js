@@ -24,6 +24,19 @@ class EmployeesView extends Component {
         this.setState(stateToChange)
     }
 
+    convertBoolToEnglish = (bool) => {
+        if (bool === "true") {
+            return "Yes"
+        }
+        else {
+            return "No"
+        }
+    }
+
+    formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -38,28 +51,25 @@ class EmployeesView extends Component {
                                 .filter(e => (this.state.idSearchTerms !== null) ? e.id === this.state.idSearchTerms : e)
                                 .map(employee => {
                                     return (
-
-                                        (employee.computer !== null) ?
-
-                                        (<div key={employee.id} className="resource">
-                                            <div><span className="darkerText">Name: </span><strong>{employee.firstName} {employee.lastName}</strong></div>
-                                            <div><span className="darkerText">Supervisor: </span><strong>{employee.isSuperVisor.toString()}</strong></div>
-                                            <div><span className="darkerText">Department Name: </span><strong>{employee.department.name}</strong></div>
-                                            <div><span className="darkerText">Department Budget: </span><strong>${employee.department.budget}</strong></div>
-                                            <div><span className="darkerText">Computer: </span><strong>{employee.computer.manufacturer} {employee.computer.make}</strong></div>
-                                            <div className="editButton" onClick={() => this.props.history.push("/employees/" + employee.id + "/edit")}>Edit</div>
-                                        </div>)
-
-                                        :
-
-                                        (<div key={employee.id} className="resource">
-                                            <div><span className="darkerText">Name: </span><strong>{employee.firstName} {employee.lastName}</strong></div>
-                                            <div><span className="darkerText">Supervisor: </span><strong>{employee.isSuperVisor.toString()}</strong></div>
-                                            <div><span className="darkerText">Department Name: </span><strong>{employee.department.name}</strong></div>
-                                            <div><span className="darkerText">Department Budget: </span><strong>${employee.department.budget}</strong></div>
-                                            <div><span className="darkerText">Computer: </span><strong>N/A</strong></div>
-                                            <div className="editButton" onClick={() => this.props.history.push("/employees/" + employee.id + "/edit")}>Edit</div>
-                                        </div>)
+                                        employee.computer !== null ?
+                                            <div key={employee.id} className="resource">
+                                                <div><span className="darkerText">ID: </span><strong>{employee.id}</strong></div>
+                                                <div><span className="darkerText">Name: </span><strong>{employee.firstName} {employee.lastName}</strong></div>
+                                                <div><span className="darkerText">Supervisor: </span><strong>{this.convertBoolToEnglish(employee.isSuperVisor.toString())}</strong></div>
+                                                <div><span className="darkerText">Department Name: </span><strong>{employee.department.name}</strong></div>
+                                                <div><span className="darkerText">Department Budget: </span><strong>${this.formatNumber(parseInt(employee.department.budget))}</strong></div>
+                                                <div><span className="darkerText">Computer: </span><strong>{employee.computer.manufacturer} {employee.computer.make}</strong></div>
+                                                <div className="editButton" onClick={() => this.props.history.push("/employees/" + employee.id + "/edit")}>Edit</div>
+                                            </div> :
+                                            <div key={employee.id} className="resource">
+                                                <div><span className="darkerText">ID: </span><strong>{employee.id}</strong></div>
+                                                <div><span className="darkerText">Name: </span><strong>{employee.firstName} {employee.lastName}</strong></div>
+                                                <div><span className="darkerText">Supervisor: </span><strong>{this.convertBoolToEnglish(employee.isSuperVisor.toString())}</strong></div>
+                                                <div><span className="darkerText">Department Name: </span><strong>{employee.department.name}</strong></div>
+                                                <div><span className="darkerText">Department Budget: </span><strong>${this.formatNumber(parseInt(employee.department.budget))}</strong></div>
+                                                <div><span className="darkerText">Computer: </span><strong>N/A</strong></div>
+                                                <div className="editButton" onClick={() => this.props.history.push("/employees/" + employee.id + "/edit")}>Edit</div>
+                                            </div>
                                     )
                                 })
                         }
