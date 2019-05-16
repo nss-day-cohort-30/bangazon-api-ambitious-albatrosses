@@ -39,7 +39,7 @@ namespace TestBangazonAPI
 
             using (var client = new APIClientProvider().Client)
             {
-                var response = await client.GetAsync("/Customer?refine=noOrders");
+                var response = await client.GetAsync("/Customer?_include=noOrders");
 
                 response.EnsureSuccessStatusCode();
 
@@ -64,12 +64,12 @@ namespace TestBangazonAPI
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
-                var customer = JsonConvert.DeserializeObject<Customer>(responseBody);
+                var customer = JsonConvert.DeserializeObject<List<Customer>>(responseBody);
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                Assert.Equal(3, customer.Id);
-                Assert.Equal("Warner", customer.FirstName);
-                Assert.Equal("Carpenter", customer.LastName);
+                Assert.Equal(3, customer[0].Id);
+                Assert.Equal("Warner", customer[0].FirstName);
+                Assert.Equal("Carpenter", customer[0].LastName);
                 Assert.NotNull(customer);
             }
         }
@@ -81,7 +81,7 @@ namespace TestBangazonAPI
             using (var client = new APIClientProvider().Client)
             {
                 var response = await client.GetAsync("/Customer/999999999");
-                Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
         }
 
@@ -166,11 +166,11 @@ namespace TestBangazonAPI
                 getCustomer.EnsureSuccessStatusCode();
 
                 string getCustomerBody = await getCustomer.Content.ReadAsStringAsync();
-                Customer newCustomer = JsonConvert.DeserializeObject<Customer>(getCustomerBody);
+                var newCustomer = JsonConvert.DeserializeObject<List<Customer>>(getCustomerBody);
 
                 Assert.Equal(HttpStatusCode.OK, getCustomer.StatusCode);
-                Assert.Equal(updatedCustomerFirstName, newCustomer.FirstName);
-                Assert.Equal(updatedCustomerLastName, newCustomer.LastName);
+                Assert.Equal(updatedCustomerFirstName, newCustomer[0].FirstName);
+                Assert.Equal(updatedCustomerLastName, newCustomer[0].LastName);
             }
         }
     }
